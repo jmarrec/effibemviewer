@@ -77,6 +77,7 @@ const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(container.clientWidth, container.clientHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
 container.appendChild(renderer.domElement);
 
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -87,8 +88,11 @@ window.addEventListener('resize', () => {
   renderer.setSize(container.clientWidth, container.clientHeight);
 });
 
-scene.add(new THREE.AmbientLight(0xbbbbbb));
+scene.add(new THREE.AmbientLight(0x888888));
 scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 0.6));
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
+dirLight.position.set(1, 2, 1);
+scene.add(dirLight);
 
 // Collect all meshes for filtering and selection
 const sceneObjects = [];
@@ -241,6 +245,33 @@ loader.parse(
     gltf.scene.traverse(obj => {
       if (obj.isMesh && obj.userData?.surfaceType) {
         sceneObjects.push(obj);
+
+        // Use OpenStudio's standard colors for surface types
+        const surfaceColors = {
+          'Floor': 0x808080,
+          'Wall': 0xccb266,
+          'RoofCeiling': 0x994c4c,
+          'Window': 0x66b2cc,
+          'GlassDoor': 0x66b2cc,
+          'Skylight': 0x66b2cc,
+          'TubularDaylightDome': 0x66b2cc,
+          'TubularDaylightDiffuser': 0x66b2cc,
+          'Door': 0x99854c,
+          'OverheadDoor': 0x99854c,
+          'SiteShading': 0x4b7c95,
+          'BuildingShading': 0x714c99,
+          'SpaceShading': 0x4c6eb2,
+          'InteriorPartitionSurface': 0x9ebc8f,
+          'AirWall': 0x66b2cc,
+        };
+        const surfaceType = obj.userData?.surfaceType;
+        const color = new THREE.Color(surfaceColors[surfaceType] ?? 0xcccccc);
+        obj.material = new THREE.MeshPhongMaterial({
+          color: color,
+          specular: 0x222222,
+          shininess: 30,
+          side: THREE.DoubleSide
+        });
 
         // Create edge lines for this mesh
         const edgesGeometry = new THREE.EdgesGeometry(obj.geometry);
