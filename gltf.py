@@ -8,19 +8,17 @@ def model_to_gltf_json(model: openstudio.model.Model) -> dict:
     ft = openstudio.gltf.GltfForwardTranslator()
     return ft.modelToGLTFJSON(model)
 
-def model_to_gltf_script(model: openstudio.model.Model, height: int = 500, use_iframe: bool = False) -> str:
-    """Generate HTML/JS to render an OpenStudio model as GLTF.
+def model_to_gltf_script(model: openstudio.model.Model, height: str = "500px", use_iframe: bool = False) -> str:
+    """Generate HTML/JS fragment to render an OpenStudio model as GLTF.
 
     Args:
         model: OpenStudio model to render
-        height: Height in pixels (default 500)
+        height: CSS height value (default "500px", use "100vh" for full viewport)
         use_iframe: If True, wrap in iframe for better Jupyter compatibility
     """
     data = model_to_gltf_json(model=model)
 
-    html_content = f"""<!DOCTYPE html>
-<html>
-<head>
+    fragment = f"""
 <script type="importmap">
 {{
   "imports": {{
@@ -29,13 +27,13 @@ def model_to_gltf_script(model: openstudio.model.Model, height: int = 500, use_i
   }}
 }}
 </script>
+
 <style>
-  body {{ margin: 0; }}
-  #viewer {{ width: 100%; height: {height}px; }}
+  #viewer {{ width: 100%; height: {height}; }}
 </style>
-</head>
-<body>
+
 <div id="viewer"></div>
+
 <script type="module">
 import * as THREE from "three";
 import {{ GLTFLoader }} from "three/addons/loaders/GLTFLoader.js";
@@ -84,33 +82,23 @@ function animate() {{
   renderer.render(scene, camera);
 }}
 </script>
-</body>
-</html>"""
+"""
 
     if use_iframe:
         import base64
-        encoded = base64.b64encode(html_content.encode()).decode()
-        return f'<iframe src="data:text/html;base64,{encoded}" style="width:100%;height:{height}px;border:none;"></iframe>'
+        full_html = f"<!DOCTYPE html><html><head></head><body style='margin:0'>{fragment}</body></html>"
+        encoded = base64.b64encode(full_html.encode()).decode()
+        return f'<iframe src="data:text/html;base64,{encoded}" style="width:100%;height:{height};border:none;"></iframe>'
 
-    return html_content
+    return fragment
+
+
+def model_to_gltf_html(model: openstudio.model.Model) -> str:
+    """Generate a full standalone HTML page for viewing an OpenStudio model."""
+    fragment = model_to_gltf_script(model=model, height="100vh")
+    return f"<!DOCTYPE html><html><head></head><body style='margin:0'>{fragment}</body></html>"
 
 
 if __name__ == "__main__":
-    # Create a simple OpenStudio model
     model = openstudio.model.exampleModel()
-
-    # Generate the GLTF viewer HTML
-    template = model_to_gltf_script(model=model)
-
-    # Write to an HTML file
-    Path('test.html').write_text(f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-{template}
-</body>
-</html>
-""")
+    Path('test.html').write_text(model_to_gltf_html(model=model))
