@@ -1,16 +1,13 @@
-import argparse
 import sys
-from pathlib import Path
 
 sys.path.insert(0, "/Users/julien/Software/Others/OS-build-release/Products/python")
 import openstudio
 
 sys.path.pop(0)
 
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, PackageLoader
 
-TEMPLATE_DIR = Path(__file__).parent
-env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
+env = Environment(loader=PackageLoader("effibemviewer", "templates"))
 
 
 def model_to_gltf_json(model: openstudio.model.Model, include_geometry_diagnostics: bool = False) -> dict:
@@ -135,24 +132,3 @@ def create_example_model(include_geometry_diagnostics: bool = False) -> openstud
         surface.setVertices(openstudio.reverse(surface.vertices()))  # Make one surface incorrectly oriented
 
     return model
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Generate GLTF viewer HTML from OpenStudio model")
-    parser.add_argument(
-        "-g",
-        "--geometry-diagnostics",
-        action="store_true",
-        help="Include geometry diagnostics (convex, correctly oriented, etc.)",
-    )
-    parser.add_argument(
-        "-o", "--output", type=Path, default=Path("test.html"), help="Output HTML file path (default: test.html)"
-    )
-    args = parser.parse_args()
-
-    model = create_example_model(include_geometry_diagnostics=args.geometry_diagnostics)
-
-    args.output.write_text(
-        model_to_gltf_html(model=model, pretty_json=True, include_geometry_diagnostics=args.geometry_diagnostics)
-    )
-    model.save("model.osm", True)

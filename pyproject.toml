@@ -1,0 +1,71 @@
+[tool.poetry]
+name = "effibemviewer"
+version = "0.1.0"
+description = "A 3D viewer for OpenStudio building energy models using GLTF and Three.js"
+authors = ["Julien Marrec <contact@effibem.com>"]
+readme = "README.md"
+license = "MIT"
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+packages = [
+    { include = "effibemviewer" },
+]
+
+[tool.poetry.urls]
+Homepage = "https://effibem.com"
+Repository = "https://github.com/jmarrec/effibemviewer"
+Issues = "https://github.com/jmarrec/effibemviewer/issues"
+
+[tool.poetry.scripts]
+effibemviewer = "effibemviewer.__main__:main"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+openstudio = { version = "^3.4", allow-prereleases = true }
+jinja2 = "^3.1"
+
+[tool.poetry.group.dev.dependencies]
+black = "^26.1"
+isort = "^7.0"
+pytest = "^9.0"
+
+[tool.black]
+line-length = 120
+skip-string-normalization = true
+target-version = ['py39', 'py310', 'py311', 'py312']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+line_length = 120
+skip_gitignore = true
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
