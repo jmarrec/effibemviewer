@@ -51,6 +51,8 @@
     <label><input type="checkbox" id="showDoors" checked> Doors</label>
     <label><input type="checkbox" id="showShading" checked> Shading</label>
     <label><input type="checkbox" id="showPartitions" checked> Partitions</label>
+    <hr style="margin: 8px 0; border: none; border-top: 1px solid #ccc;">
+    <label><input type="checkbox" id="showEdges" checked> Show Edges</label>
   </div>
   <div id="info-panel">
     <h4 id="info-name"></h4>
@@ -90,6 +92,8 @@ scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 0.6));
 
 // Collect all meshes for filtering and selection
 const sceneObjects = [];
+// Map mesh -> edge lines
+const objectEdges = new Map();
 
 // Selection state
 const raycaster = new THREE.Raycaster();
@@ -194,6 +198,7 @@ function updateVisibility() {
   const showDoors = document.getElementById('showDoors').checked;
   const showShading = document.getElementById('showShading').checked;
   const showPartitions = document.getElementById('showPartitions').checked;
+  const showEdges = document.getElementById('showEdges').checked;
 
   sceneObjects.forEach(obj => {
     const surfaceType = obj.userData?.surfaceType || '';
@@ -208,11 +213,17 @@ function updateVisibility() {
     else if (surfaceType === 'InteriorPartitionSurface') visible = showPartitions;
 
     obj.visible = visible;
+
+    // Sync edge visibility
+    const edges = objectEdges.get(obj);
+    if (edges) {
+      edges.visible = visible && showEdges;
+    }
   });
 }
 
 // Add event listeners to checkboxes
-['showFloors', 'showWalls', 'showRoofs', 'showWindows', 'showDoors', 'showShading', 'showPartitions'].forEach(id => {
+['showFloors', 'showWalls', 'showRoofs', 'showWindows', 'showDoors', 'showShading', 'showPartitions', 'showEdges'].forEach(id => {
   document.getElementById(id).addEventListener('change', updateVisibility);
 });
 
@@ -226,9 +237,19 @@ loader.parse(
     scene.add(gltf.scene);
 
     // Collect all meshes with userData for filtering
+    const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
     gltf.scene.traverse(obj => {
       if (obj.isMesh && obj.userData?.surfaceType) {
         sceneObjects.push(obj);
+
+        // Create edge lines for this mesh
+        const edgesGeometry = new THREE.EdgesGeometry(obj.geometry);
+        const edges = new THREE.LineSegments(edgesGeometry, edgeMaterial);
+        edges.position.copy(obj.position);
+        edges.rotation.copy(obj.rotation);
+        edges.scale.copy(obj.scale);
+        obj.parent.add(edges);
+        objectEdges.set(obj, edges);
       }
     });
 
