@@ -29,10 +29,34 @@ def model_to_gltf_script(model: openstudio.model.Model, height: str = "500px", u
 </script>
 
 <style>
-  #viewer {{ width: 100%; height: {height}; }}
+  #viewer {{ width: 100%; height: {height}; position: relative; }}
+  #controls {{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255,255,255,0.9);
+    padding: 10px;
+    border-radius: 4px;
+    font-family: sans-serif;
+    font-size: 12px;
+    z-index: 100;
+  }}
+  #controls label {{ display: block; margin: 4px 0; cursor: pointer; }}
+  #controls input {{ margin-right: 6px; }}
 </style>
 
-<div id="viewer"></div>
+<div id="viewer">
+  <div id="controls">
+    <strong>Surface Filters</strong>
+    <label><input type="checkbox" id="showFloors" checked> Floors</label>
+    <label><input type="checkbox" id="showWalls" checked> Walls</label>
+    <label><input type="checkbox" id="showRoofs" checked> Roofs/Ceilings</label>
+    <label><input type="checkbox" id="showWindows" checked> Windows</label>
+    <label><input type="checkbox" id="showDoors" checked> Doors</label>
+    <label><input type="checkbox" id="showShading" checked> Shading</label>
+    <label><input type="checkbox" id="showPartitions" checked> Partitions</label>
+  </div>
+</div>
 
 <script type="module">
 import * as THREE from "three";
@@ -61,7 +85,40 @@ window.addEventListener('resize', () => {{
 scene.add(new THREE.AmbientLight(0xbbbbbb));
 scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 0.6));
 
-const gltfData = {json.dumps(data)};
+const gltfData = {json.dumps(data, indent=2)};
+
+// Collect all meshes for filtering
+const sceneObjects = [];
+
+function updateVisibility() {{
+  const showFloors = document.getElementById('showFloors').checked;
+  const showWalls = document.getElementById('showWalls').checked;
+  const showRoofs = document.getElementById('showRoofs').checked;
+  const showWindows = document.getElementById('showWindows').checked;
+  const showDoors = document.getElementById('showDoors').checked;
+  const showShading = document.getElementById('showShading').checked;
+  const showPartitions = document.getElementById('showPartitions').checked;
+
+  sceneObjects.forEach(obj => {{
+    const surfaceType = obj.userData?.surfaceType || '';
+    let visible = true;
+
+    if (surfaceType === 'Floor') visible = showFloors;
+    else if (surfaceType === 'Wall') visible = showWalls;
+    else if (surfaceType === 'RoofCeiling') visible = showRoofs;
+    else if (surfaceType.includes('Window') || surfaceType.includes('Skylight') || surfaceType.includes('TubularDaylight') || surfaceType === 'GlassDoor') visible = showWindows;
+    else if (surfaceType.includes('Door')) visible = showDoors;
+    else if (surfaceType.includes('Shading')) visible = showShading;
+    else if (surfaceType === 'InteriorPartitionSurface') visible = showPartitions;
+
+    obj.visible = visible;
+  }});
+}}
+
+// Add event listeners to checkboxes
+['showFloors', 'showWalls', 'showRoofs', 'showWindows', 'showDoors', 'showShading', 'showPartitions'].forEach(id => {{
+  document.getElementById(id).addEventListener('change', updateVisibility);
+}});
 
 const loader = new GLTFLoader();
 loader.parse(
@@ -69,6 +126,13 @@ loader.parse(
   "",
   (gltf) => {{
     scene.add(gltf.scene);
+
+    // Collect all meshes with userData for filtering
+    gltf.scene.traverse(obj => {{
+      if (obj.isMesh && obj.userData?.surfaceType) {{
+        sceneObjects.push(obj);
+      }}
+    }});
 
     // Position camera using bounding box from GLTF metadata
     const bbox = gltfData.scenes?.[0]?.extras?.boundingbox;
