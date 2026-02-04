@@ -44,12 +44,13 @@ const container = document.getElementById("viewer");
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xf5f5f5);
 
-const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
-camera.position.set(5, 5, 5);
+const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 5000);
 
 const renderer = new THREE.WebGLRenderer({{ antialias: true }});
 renderer.setSize(container.clientWidth, container.clientHeight);
 container.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
 
 window.addEventListener('resize', () => {{
   camera.aspect = container.clientWidth / container.clientHeight;
@@ -57,21 +58,38 @@ window.addEventListener('resize', () => {{
   renderer.setSize(container.clientWidth, container.clientHeight);
 }});
 
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.target.set(0, 1, 0);
-controls.update();
+scene.add(new THREE.AmbientLight(0xbbbbbb));
+scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 0.6));
 
-scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 1.2));
-scene.add(new THREE.DirectionalLight(0xffffff, 0.8));
-
-const gltf = {json.dumps(data)};
+const gltfData = {json.dumps(data)};
 
 const loader = new GLTFLoader();
 loader.parse(
-  JSON.stringify(gltf),
+  JSON.stringify(gltfData),
   "",
-  (g) => {{
-    scene.add(g.scene);
+  (gltf) => {{
+    scene.add(gltf.scene);
+
+    // Position camera using bounding box from GLTF metadata
+    const bbox = gltfData.scenes?.[0]?.extras?.boundingbox;
+    if (bbox) {{
+      // Convert from OpenStudio coords (Z-up) to Three.js coords (Y-up)
+      const lookAt = new THREE.Vector3(bbox.lookAtX, bbox.lookAtZ, -bbox.lookAtY);
+      const radius = 2.5 * bbox.lookAtR;
+
+      // Position camera at an angle (similar to -30, 30 degrees)
+      const theta = -30 * Math.PI / 180;
+      const phi = 30 * Math.PI / 180;
+      camera.position.set(
+        radius * Math.cos(theta) * Math.cos(phi) + lookAt.x,
+        radius * Math.sin(phi) + lookAt.y,
+        -radius * Math.sin(theta) * Math.cos(phi) + lookAt.z
+      );
+
+      controls.target.copy(lookAt);
+      controls.update();
+    }}
+
     animate();
   }},
   (e) => console.error(e)
