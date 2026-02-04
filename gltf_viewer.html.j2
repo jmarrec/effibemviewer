@@ -42,6 +42,18 @@
 
 <div id="viewer">
   <div id="controls">
+    <div style="margin-bottom: 8px;">
+      <label style="display: inline;"><strong>Render By</strong></label>
+      <select id="renderBy" style="margin-left: 8px; font-size: 12px;">
+        <option value="surfaceType">Surface Type</option>
+        <option value="boundary">Boundary</option>
+        <option value="construction">Construction</option>
+        <option value="thermalZone">Thermal Zone</option>
+        <option value="spaceType">Space Type</option>
+        <option value="buildingStory">Building Story</option>
+      </select>
+    </div>
+    <hr style="margin: 8px 0; border: none; border-top: 1px solid #ccc;">
     <strong>Surface Filters</strong>
     <label><input type="checkbox" id="showFloors" checked> Floors</label>
     <label><input type="checkbox" id="showWalls" checked> Walls</label>
@@ -55,10 +67,16 @@
   </div>
   <div id="info-panel">
     <h4 id="info-name"></h4>
-    <div class="info-row"><span class="info-label">Type:</span> <span id="info-type"></span></div>
+    <div class="info-row" id="info-type-row"><span class="info-label">Surface Type:</span> <span id="info-type"></span></div>
     <div class="info-row" id="info-space-row"><span class="info-label">Space:</span> <span id="info-space"></span></div>
+    <div class="info-row" id="info-spaceType-row"><span class="info-label">Space Type:</span> <span id="info-spaceType"></span></div>
+    <div class="info-row" id="info-thermalZone-row"><span class="info-label">Thermal Zone:</span> <span id="info-thermalZone"></span></div>
+    <div class="info-row" id="info-buildingStory-row"><span class="info-label">Building Story:</span> <span id="info-buildingStory"></span></div>
     <div class="info-row" id="info-construction-row"><span class="info-label">Construction:</span> <span id="info-construction"></span></div>
     <div class="info-row" id="info-boundary-row"><span class="info-label">Boundary:</span> <span id="info-boundary"></span></div>
+    <div class="info-row" id="info-boundaryObject-row"><span class="info-label">Adjacent To:</span> <span id="info-boundaryObject"></span></div>
+    <div class="info-row" id="info-sunExposure-row"><span class="info-label">Sun Exposure:</span> <span id="info-sunExposure"></span></div>
+    <div class="info-row" id="info-windExposure-row"><span class="info-label">Wind Exposure:</span> <span id="info-windExposure"></span></div>
   </div>
 </div>
 
@@ -125,37 +143,32 @@ function selectObject(obj, clickX, clickY) {
     originalMaterial = obj.material;
     obj.material = selectedMaterial;
 
-    // Update info panel
+    // Update info panel with all available details
     const data = obj.userData;
     document.getElementById('info-name').textContent = data.name || 'Unknown';
-    document.getElementById('info-type').textContent = data.surfaceType || '';
 
-    const spaceRow = document.getElementById('info-space-row');
-    const space = document.getElementById('info-space');
-    if (data.spaceName) {
-      space.textContent = data.spaceName;
-      spaceRow.style.display = 'block';
-    } else {
-      spaceRow.style.display = 'none';
-    }
+    // Helper to show/hide rows
+    const setRow = (id, value) => {
+      const row = document.getElementById(`info-${id}-row`);
+      const span = document.getElementById(`info-${id}`);
+      if (value) {
+        span.textContent = value;
+        row.style.display = 'block';
+      } else {
+        row.style.display = 'none';
+      }
+    };
 
-    const constructionRow = document.getElementById('info-construction-row');
-    const construction = document.getElementById('info-construction');
-    if (data.constructionName) {
-      construction.textContent = data.constructionName;
-      constructionRow.style.display = 'block';
-    } else {
-      constructionRow.style.display = 'none';
-    }
-
-    const boundaryRow = document.getElementById('info-boundary-row');
-    const boundary = document.getElementById('info-boundary');
-    if (data.outsideBoundaryCondition) {
-      boundary.textContent = data.outsideBoundaryCondition;
-      boundaryRow.style.display = 'block';
-    } else {
-      boundaryRow.style.display = 'none';
-    }
+    setRow('type', data.surfaceType);
+    setRow('space', data.spaceName);
+    setRow('spaceType', data.spaceTypeName);
+    setRow('thermalZone', data.thermalZoneName);
+    setRow('buildingStory', data.buildingStoryName);
+    setRow('construction', data.constructionName);
+    setRow('boundary', data.outsideBoundaryCondition);
+    setRow('boundaryObject', data.outsideBoundaryConditionObjectName);
+    setRow('sunExposure', data.sunExposure);
+    setRow('windExposure', data.windExposure);
 
     // Position panel to the right of click, with offset
     const rect = container.getBoundingClientRect();
@@ -255,6 +268,112 @@ function updateVisibility() {
   document.getElementById(id).addEventListener('change', updateVisibility);
 });
 
+// Color definitions for render modes
+const surfaceTypeColors = {
+  'Floor': 0x808080, 'Wall': 0xccb266, 'RoofCeiling': 0x994c4c,
+  'Window': 0x66b2cc, 'GlassDoor': 0x66b2cc, 'Skylight': 0x66b2cc,
+  'TubularDaylightDome': 0x66b2cc, 'TubularDaylightDiffuser': 0x66b2cc,
+  'Door': 0x99854c, 'OverheadDoor': 0x99854c,
+  'SiteShading': 0x4b7c95, 'BuildingShading': 0x714c99, 'SpaceShading': 0x4c6eb2,
+  'InteriorPartitionSurface': 0x9ebc8f, 'AirWall': 0x66b2cc,
+};
+const surfaceTypeColorsInt = {
+  'Floor': 0xbfbfbf, 'Wall': 0xebe2c5, 'RoofCeiling': 0xca9595,
+  'Window': 0xc0e2eb, 'GlassDoor': 0xc0e2eb, 'Skylight': 0xc0e2eb,
+  'TubularDaylightDome': 0xc0e2eb, 'TubularDaylightDiffuser': 0xc0e2eb,
+  'Door': 0xcabc95, 'OverheadDoor': 0xcabc95,
+  'SiteShading': 0xbbd1dc, 'BuildingShading': 0xd8cbe5, 'SpaceShading': 0xb7c5e0,
+  'InteriorPartitionSurface': 0xd5e2cf, 'AirWall': 0xc0e2eb,
+};
+const boundaryColors = {
+  'Surface': 0x009900, 'Adiabatic': 0xff0000, 'Space': 0xff0000,
+  'Outdoors': 0xa3cccc, 'Outdoors_Sun': 0x28cccc, 'Outdoors_Wind': 0x099fa2, 'Outdoors_SunWind': 0x4477a1,
+  'Ground': 0xccb77a, 'Foundation': 0x751e7a,
+  'OtherSideCoefficients': 0x3f3f3f, 'OtherSideConditionsModel': 0x99004c,
+};
+
+// Generate consistent color from string (for dynamic values like thermal zones)
+function stringToColor(str) {
+  if (!str) return 0xcccccc;
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  // Generate HSL with good saturation and lightness
+  const h = Math.abs(hash) % 360;
+  return new THREE.Color(`hsl(${h}, 65%, 55%)`).getHex();
+}
+
+// Cache for dynamic colors
+const dynamicColors = {};
+function getDynamicColor(category, name) {
+  const key = `${category}_${name}`;
+  if (!dynamicColors[key]) {
+    dynamicColors[key] = stringToColor(name);
+  }
+  return dynamicColors[key];
+}
+
+function getColorsForObject(obj, renderMode) {
+  const data = obj.userData;
+  let colorExt, colorInt;
+
+  switch (renderMode) {
+    case 'surfaceType':
+      colorExt = surfaceTypeColors[data.surfaceType] ?? 0xcccccc;
+      colorInt = surfaceTypeColorsInt[data.surfaceType] ?? 0xeeeeee;
+      break;
+    case 'boundary':
+      const bc = data.outsideBoundaryCondition || 'Outdoors';
+      // Combine sun/wind exposure for outdoor surfaces
+      let boundaryKey = bc;
+      if (bc === 'Outdoors') {
+        const sun = data.sunExposure === 'SunExposed';
+        const wind = data.windExposure === 'WindExposed';
+        if (sun && wind) boundaryKey = 'Outdoors_SunWind';
+        else if (sun) boundaryKey = 'Outdoors_Sun';
+        else if (wind) boundaryKey = 'Outdoors_Wind';
+      }
+      colorExt = boundaryColors[boundaryKey] ?? boundaryColors[bc] ?? 0xcccccc;
+      colorInt = colorExt;
+      break;
+    case 'construction':
+      colorExt = getDynamicColor('construction', data.constructionName);
+      colorInt = colorExt;
+      break;
+    case 'thermalZone':
+      colorExt = getDynamicColor('thermalZone', data.thermalZoneName);
+      colorInt = colorExt;
+      break;
+    case 'spaceType':
+      colorExt = getDynamicColor('spaceType', data.spaceTypeName);
+      colorInt = colorExt;
+      break;
+    case 'buildingStory':
+      colorExt = getDynamicColor('buildingStory', data.buildingStoryName);
+      colorInt = colorExt;
+      break;
+    default:
+      colorExt = 0xcccccc;
+      colorInt = 0xeeeeee;
+  }
+  return { colorExt, colorInt };
+}
+
+function updateRenderMode() {
+  const renderMode = document.getElementById('renderBy').value;
+  sceneObjects.forEach(obj => {
+    const { colorExt, colorInt } = getColorsForObject(obj, renderMode);
+    obj.material.color.setHex(colorExt);
+    const backObj = backObjects.get(obj);
+    if (backObj) {
+      backObj.material.color.setHex(colorInt);
+    }
+  });
+}
+
+document.getElementById('renderBy').addEventListener('change', updateRenderMode);
+
 const gltfData = {{ gltf_data | tojson(indent=indent) }};
 
 const loader = new GLTFLoader();
@@ -266,53 +385,17 @@ loader.parse(
 
     // Collect all meshes with userData for filtering
     const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+    const renderMode = document.getElementById('renderBy').value;
+
     gltf.scene.traverse(obj => {
       if (obj.isMesh && obj.userData?.surfaceType) {
         sceneObjects.push(obj);
 
-        // Use OpenStudio's standard colors for surface types (exterior/front)
-        const surfaceColors = {
-          'Floor': 0x808080,
-          'Wall': 0xccb266,
-          'RoofCeiling': 0x994c4c,
-          'Window': 0x66b2cc,
-          'GlassDoor': 0x66b2cc,
-          'Skylight': 0x66b2cc,
-          'TubularDaylightDome': 0x66b2cc,
-          'TubularDaylightDiffuser': 0x66b2cc,
-          'Door': 0x99854c,
-          'OverheadDoor': 0x99854c,
-          'SiteShading': 0x4b7c95,
-          'BuildingShading': 0x714c99,
-          'SpaceShading': 0x4c6eb2,
-          'InteriorPartitionSurface': 0x9ebc8f,
-          'AirWall': 0x66b2cc,
-        };
-        // Interior/back colors (dimmer versions)
-        const surfaceColorsInt = {
-          'Floor': 0xbfbfbf,
-          'Wall': 0xebe2c5,
-          'RoofCeiling': 0xca9595,
-          'Window': 0xc0e2eb,
-          'GlassDoor': 0xc0e2eb,
-          'Skylight': 0xc0e2eb,
-          'TubularDaylightDome': 0xc0e2eb,
-          'TubularDaylightDiffuser': 0xc0e2eb,
-          'Door': 0xcabc95,
-          'OverheadDoor': 0xcabc95,
-          'SiteShading': 0xbbd1dc,
-          'BuildingShading': 0xd8cbe5,
-          'SpaceShading': 0xb7c5e0,
-          'InteriorPartitionSurface': 0xd5e2cf,
-          'AirWall': 0xc0e2eb,
-        };
-        const surfaceType = obj.userData?.surfaceType;
-        const color = new THREE.Color(surfaceColors[surfaceType] ?? 0xcccccc);
-        const colorInt = new THREE.Color(surfaceColorsInt[surfaceType] ?? 0xeeeeee);
+        const { colorExt, colorInt } = getColorsForObject(obj, renderMode);
 
         // Front face material
         obj.material = new THREE.MeshPhongMaterial({
-          color: color,
+          color: colorExt,
           specular: 0x222222,
           shininess: 30,
           side: THREE.FrontSide
