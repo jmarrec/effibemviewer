@@ -98,6 +98,8 @@ scene.add(dirLight);
 const sceneObjects = [];
 // Map mesh -> edge lines
 const objectEdges = new Map();
+// Map mesh -> back face object
+const backObjects = new Map();
 
 // Selection state
 const raycaster = new THREE.Raycaster();
@@ -223,6 +225,12 @@ function updateVisibility() {
     if (edges) {
       edges.visible = visible && showEdges;
     }
+
+    // Sync back object visibility
+    const backObj = backObjects.get(obj);
+    if (backObj) {
+      backObj.visible = visible;
+    }
   });
 }
 
@@ -246,7 +254,7 @@ loader.parse(
       if (obj.isMesh && obj.userData?.surfaceType) {
         sceneObjects.push(obj);
 
-        // Use OpenStudio's standard colors for surface types
+        // Use OpenStudio's standard colors for surface types (exterior/front)
         const surfaceColors = {
           'Floor': 0x808080,
           'Wall': 0xccb266,
@@ -264,14 +272,46 @@ loader.parse(
           'InteriorPartitionSurface': 0x9ebc8f,
           'AirWall': 0x66b2cc,
         };
+        // Interior/back colors (dimmer versions)
+        const surfaceColorsInt = {
+          'Floor': 0xbfbfbf,
+          'Wall': 0xebe2c5,
+          'RoofCeiling': 0xca9595,
+          'Window': 0xc0e2eb,
+          'GlassDoor': 0xc0e2eb,
+          'Skylight': 0xc0e2eb,
+          'TubularDaylightDome': 0xc0e2eb,
+          'TubularDaylightDiffuser': 0xc0e2eb,
+          'Door': 0xcabc95,
+          'OverheadDoor': 0xcabc95,
+          'SiteShading': 0xbbd1dc,
+          'BuildingShading': 0xd8cbe5,
+          'SpaceShading': 0xb7c5e0,
+          'InteriorPartitionSurface': 0xd5e2cf,
+          'AirWall': 0xc0e2eb,
+        };
         const surfaceType = obj.userData?.surfaceType;
         const color = new THREE.Color(surfaceColors[surfaceType] ?? 0xcccccc);
+        const colorInt = new THREE.Color(surfaceColorsInt[surfaceType] ?? 0xeeeeee);
+
+        // Front face material
         obj.material = new THREE.MeshPhongMaterial({
           color: color,
           specular: 0x222222,
           shininess: 30,
-          side: THREE.DoubleSide
+          side: THREE.FrontSide
         });
+
+        // Create back face object with interior color
+        const backObj = obj.clone();
+        backObj.material = new THREE.MeshPhongMaterial({
+          color: colorInt,
+          specular: 0x222222,
+          shininess: 30,
+          side: THREE.BackSide
+        });
+        obj.parent.add(backObj);
+        backObjects.set(obj, backObj);
 
         // Create edge lines for this mesh
         const edgesGeometry = new THREE.EdgesGeometry(obj.geometry);
