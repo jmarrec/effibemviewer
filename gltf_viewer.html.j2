@@ -135,6 +135,7 @@ window.addEventListener('resize', () => {
   camera.aspect = container.clientWidth / container.clientHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(container.clientWidth, container.clientHeight);
+  requestRenderIfNotRequested();
 });
 
 scene.add(new THREE.AmbientLight(0x888888));
@@ -313,6 +314,8 @@ renderer.domElement.addEventListener('click', (event) => {
   } else {
     selectObject(null);
   }
+
+  requestRenderIfNotRequested();
 });
 
 function updateVisibility() {
@@ -380,6 +383,8 @@ function updateVisibility() {
       backObj.visible = visible;
     }
   });
+
+  requestRenderIfNotRequested();
 }
 
 // Add event listeners to checkboxes and dropdowns
@@ -495,6 +500,8 @@ function updateRenderMode() {
       backObj.material.color.setHex(colorInt);
     }
   });
+
+  requestRenderIfNotRequested();
 }
 
 document.getElementById('renderBy').addEventListener('change', updateRenderMode);
@@ -579,13 +586,30 @@ loader.parse(
       controls.update();
     }
 
-    animate();
+    requestRenderIfNotRequested();
   },
   (e) => console.error(e)
 );
 
-function animate() {
-  requestAnimationFrame(animate);
+// Render on demand (not every frame) to save CPU
+let renderRequested = false;
+
+function render() {
+  renderRequested = false;
+  controls.update();
   renderer.render(scene, camera);
 }
+
+function requestRenderIfNotRequested() {
+  if (!renderRequested) {
+    renderRequested = true;
+    requestAnimationFrame(render);
+  }
+}
+
+// Re-render when controls change (orbit, zoom, pan)
+controls.addEventListener('change', requestRenderIfNotRequested);
+
+// Re-render on window resize
+window.addEventListener('resize', requestRenderIfNotRequested);
 </script>
