@@ -37,9 +37,19 @@
   }
   #info-panel h4 { margin: 0 0 8px 0; font-size: 13px; }
   #info-panel .info-row { margin: 4px 0; }
+  #info-panel .info-row.emphasized { background: #1a73e8; color: white; margin: 4px -8px; padding: 4px 8px; border-radius: 4px; font-weight: 600; }
+  #info-panel .info-row.emphasized .info-label { color: white; }
   #info-panel .info-label { color: #666; }
-  #info-panel .diag-true { color: green; }
-  #info-panel .diag-false { color: red; }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 10px;
+    text-transform: capitalize;
+  }
+  .badge-success { background-color: #198754; color: white; }
+  .badge-danger { background-color: #dc3545; color: white; }
 </style>
 
 <div id="viewer">
@@ -167,17 +177,31 @@ function selectObject(obj, clickX, clickY) {
 
     // Update info panel with all available details
     const data = obj.userData;
+    const renderMode = document.getElementById('renderBy').value;
     document.getElementById('info-name').textContent = data.name || 'Unknown';
 
-    // Helper to show/hide rows
+    // Map renderBy values to info row IDs
+    const renderByToRowId = {
+      'surfaceType': 'type',
+      'boundary': 'boundary',
+      'construction': 'construction',
+      'thermalZone': 'thermalZone',
+      'spaceType': 'spaceType',
+      'buildingStory': 'buildingStory',
+    };
+    const emphasizedRowId = renderByToRowId[renderMode];
+
+    // Helper to show/hide rows with emphasis
     const setRow = (id, value) => {
       const row = document.getElementById(`info-${id}-row`);
       const span = document.getElementById(`info-${id}`);
       if (value) {
         span.textContent = value;
         row.style.display = 'block';
+        row.classList.toggle('emphasized', id === emphasizedRowId);
       } else {
         row.style.display = 'none';
+        row.classList.remove('emphasized');
       }
     };
 
@@ -193,13 +217,12 @@ function selectObject(obj, clickX, clickY) {
     setRow('windExposure', data.windExposure);
 
 {% if include_geometry_diagnostics %}
-    // Diagnostic fields with colored boolean values
+    // Diagnostic fields with pill badge styling
     const setDiagRow = (id, value) => {
       const row = document.getElementById(`info-${id}-row`);
       const span = document.getElementById(`info-${id}`);
       if (row && value !== undefined) {
-        span.textContent = value;
-        span.className = value ? 'diag-true' : 'diag-false';
+        span.innerHTML = `<span class="badge ${value ? 'badge-success' : 'badge-danger'}">${value}</span>`;
         row.style.display = 'block';
       } else if (row) {
         row.style.display = 'none';
