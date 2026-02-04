@@ -38,6 +38,8 @@
   #info-panel h4 { margin: 0 0 8px 0; font-size: 13px; }
   #info-panel .info-row { margin: 4px 0; }
   #info-panel .info-label { color: #666; }
+  #info-panel .diag-true { color: green; }
+  #info-panel .diag-false { color: red; }
 </style>
 
 <div id="viewer">
@@ -70,6 +72,14 @@
     <label><input type="checkbox" id="showPartitions" checked> Partitions</label>
     <hr style="margin: 8px 0; border: none; border-top: 1px solid #ccc;">
     <label><input type="checkbox" id="showEdges" checked> Show Edges</label>
+{% if include_geometry_diagnostics %}
+    <hr style="margin: 8px 0; border: none; border-top: 1px solid #ccc;">
+    <strong>Geometry Diagnostics</strong>
+    <label><input type="checkbox" id="showOnlyNonConvexSurfaces"> Non-Convex Surfaces Only</label>
+    <label><input type="checkbox" id="showOnlyIncorrectlyOriented"> Incorrectly Oriented Only</label>
+    <label><input type="checkbox" id="showOnlyNonConvexSpaces"> Non-Convex Spaces Only</label>
+    <label><input type="checkbox" id="showOnlyNonEnclosedSpaces"> Non-Enclosed Spaces Only</label>
+{% endif %}
   </div>
   <div id="info-panel">
     <h4 id="info-name"></h4>
@@ -83,6 +93,12 @@
     <div class="info-row" id="info-boundaryObject-row"><span class="info-label">Adjacent To:</span> <span id="info-boundaryObject"></span></div>
     <div class="info-row" id="info-sunExposure-row"><span class="info-label">Sun Exposure:</span> <span id="info-sunExposure"></span></div>
     <div class="info-row" id="info-windExposure-row"><span class="info-label">Wind Exposure:</span> <span id="info-windExposure"></span></div>
+{% if include_geometry_diagnostics %}
+    <div class="info-row" id="info-convex-row"><span class="info-label">Convex:</span> <span id="info-convex"></span></div>
+    <div class="info-row" id="info-correctlyOriented-row"><span class="info-label">Correctly Oriented:</span> <span id="info-correctlyOriented"></span></div>
+    <div class="info-row" id="info-spaceConvex-row"><span class="info-label">Space Convex:</span> <span id="info-spaceConvex"></span></div>
+    <div class="info-row" id="info-spaceEnclosed-row"><span class="info-label">Space Enclosed:</span> <span id="info-spaceEnclosed"></span></div>
+{% endif %}
   </div>
 </div>
 
@@ -176,6 +192,26 @@ function selectObject(obj, clickX, clickY) {
     setRow('sunExposure', data.sunExposure);
     setRow('windExposure', data.windExposure);
 
+{% if include_geometry_diagnostics %}
+    // Diagnostic fields with colored boolean values
+    const setDiagRow = (id, value) => {
+      const row = document.getElementById(`info-${id}-row`);
+      const span = document.getElementById(`info-${id}`);
+      if (row && value !== undefined) {
+        span.textContent = value;
+        span.className = value ? 'diag-true' : 'diag-false';
+        row.style.display = 'block';
+      } else if (row) {
+        row.style.display = 'none';
+      }
+    };
+
+    setDiagRow('convex', data.convex);
+    setDiagRow('correctlyOriented', data.correctlyOriented);
+    setDiagRow('spaceConvex', data.spaceConvex);
+    setDiagRow('spaceEnclosed', data.spaceEnclosed);
+{% endif %}
+
     // Position panel to the right of click, with offset
     const rect = container.getBoundingClientRect();
     let left = clickX - rect.left + 15;
@@ -261,6 +297,27 @@ function updateVisibility() {
       visible = false;
     }
 
+{% if include_geometry_diagnostics %}
+    // Geometry diagnostic filters
+    const showOnlyNonConvexSurfaces = document.getElementById('showOnlyNonConvexSurfaces').checked;
+    const showOnlyIncorrectlyOriented = document.getElementById('showOnlyIncorrectlyOriented').checked;
+    const showOnlyNonConvexSpaces = document.getElementById('showOnlyNonConvexSpaces').checked;
+    const showOnlyNonEnclosedSpaces = document.getElementById('showOnlyNonEnclosedSpaces').checked;
+
+    if (visible && showOnlyNonConvexSurfaces && obj.userData.convex !== false) {
+      visible = false;
+    }
+    if (visible && showOnlyIncorrectlyOriented && obj.userData.correctlyOriented !== false) {
+      visible = false;
+    }
+    if (visible && showOnlyNonConvexSpaces && obj.userData.spaceConvex !== false) {
+      visible = false;
+    }
+    if (visible && showOnlyNonEnclosedSpaces && obj.userData.spaceEnclosed !== false) {
+      visible = false;
+    }
+{% endif %}
+
     obj.visible = visible;
 
     // Sync edge visibility
@@ -282,6 +339,11 @@ function updateVisibility() {
   document.getElementById(id).addEventListener('change', updateVisibility);
 });
 document.getElementById('showStory').addEventListener('change', updateVisibility);
+{% if include_geometry_diagnostics %}
+['showOnlyNonConvexSurfaces', 'showOnlyIncorrectlyOriented', 'showOnlyNonConvexSpaces', 'showOnlyNonEnclosedSpaces'].forEach(id => {
+  document.getElementById(id).addEventListener('change', updateVisibility);
+});
+{% endif %}
 
 // Color definitions for render modes
 const surfaceTypeColors = {
