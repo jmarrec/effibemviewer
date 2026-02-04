@@ -53,6 +53,12 @@
         <option value="buildingStory">Building Story</option>
       </select>
     </div>
+    <div style="margin: 8px 0;">
+      <label style="display: inline;"><strong>Show Story</strong></label>
+      <select id="showStory" style="margin-left: 8px; font-size: 12px;">
+        <option value="">All Stories</option>
+      </select>
+    </div>
     <hr style="margin: 8px 0; border: none; border-top: 1px solid #ccc;">
     <strong>Surface Filters</strong>
     <label><input type="checkbox" id="showFloors" checked> Floors</label>
@@ -234,11 +240,14 @@ function updateVisibility() {
   const showShading = document.getElementById('showShading').checked;
   const showPartitions = document.getElementById('showPartitions').checked;
   const showEdges = document.getElementById('showEdges').checked;
+  const showStory = document.getElementById('showStory').value;
 
   sceneObjects.forEach(obj => {
     const surfaceType = obj.userData?.surfaceType || '';
+    const storyName = obj.userData?.buildingStoryName || '';
     let visible = true;
 
+    // Filter by surface type
     if (surfaceType === 'Floor') visible = showFloors;
     else if (surfaceType === 'Wall') visible = showWalls;
     else if (surfaceType === 'RoofCeiling') visible = showRoofs;
@@ -246,6 +255,11 @@ function updateVisibility() {
     else if (surfaceType.includes('Door')) visible = showDoors;
     else if (surfaceType.includes('Shading')) visible = showShading;
     else if (surfaceType === 'InteriorPartitionSurface') visible = showPartitions;
+
+    // Filter by story
+    if (visible && showStory && storyName !== showStory) {
+      visible = false;
+    }
 
     obj.visible = visible;
 
@@ -263,10 +277,11 @@ function updateVisibility() {
   });
 }
 
-// Add event listeners to checkboxes
+// Add event listeners to checkboxes and dropdowns
 ['showFloors', 'showWalls', 'showRoofs', 'showWindows', 'showDoors', 'showShading', 'showPartitions', 'showEdges'].forEach(id => {
   document.getElementById(id).addEventListener('change', updateVisibility);
 });
+document.getElementById('showStory').addEventListener('change', updateVisibility);
 
 // Color definitions for render modes
 const surfaceTypeColors = {
@@ -384,8 +399,8 @@ loader.parse(
     scene.add(gltf.scene);
 
     // Collect all meshes with userData for filtering
-    const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
     const renderMode = document.getElementById('renderBy').value;
+    const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
 
     gltf.scene.traverse(obj => {
       if (obj.isMesh && obj.userData?.surfaceType) {
@@ -421,6 +436,16 @@ loader.parse(
         obj.parent.add(edges);
         objectEdges.set(obj, edges);
       }
+    });
+
+    // Populate story dropdown with unique values
+    const storySelect = document.getElementById('showStory');
+    const storyNames = [...new Set(sceneObjects.map(o => o.userData?.buildingStoryName).filter(Boolean))].sort();
+    storyNames.forEach(name => {
+      const option = document.createElement('option');
+      option.value = name;
+      option.textContent = name;
+      storySelect.appendChild(option);
     });
 
     // Position camera using bounding box from GLTF metadata
