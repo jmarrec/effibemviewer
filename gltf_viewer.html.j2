@@ -25,8 +25,6 @@
   #info-panel {
     display: none;
     position: absolute;
-    bottom: 10px;
-    left: 10px;
     background: rgba(255,255,255,0.95);
     padding: 10px 14px;
     border-radius: 4px;
@@ -35,6 +33,7 @@
     z-index: 100;
     max-width: 300px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    pointer-events: none;
   }
   #info-panel h4 { margin: 0 0 8px 0; font-size: 13px; }
   #info-panel .info-row { margin: 4px 0; }
@@ -115,7 +114,7 @@ const selectedMaterial = new THREE.MeshStandardMaterial({
 
 const infoPanel = document.getElementById('info-panel');
 
-function selectObject(obj) {
+function selectObject(obj, clickX, clickY) {
   // Restore previous selection
   if (selectedObject && originalMaterial) {
     selectedObject.material = originalMaterial;
@@ -158,7 +157,24 @@ function selectObject(obj) {
       boundaryRow.style.display = 'none';
     }
 
+    // Position panel to the right of click, with offset
+    const rect = container.getBoundingClientRect();
+    let left = clickX - rect.left + 15;
+    let top = clickY - rect.top - 10;
+
+    // Keep panel within container bounds
     infoPanel.style.display = 'block';
+    const panelRect = infoPanel.getBoundingClientRect();
+    if (left + panelRect.width > container.clientWidth) {
+      left = clickX - rect.left - panelRect.width - 15;
+    }
+    if (top + panelRect.height > container.clientHeight) {
+      top = container.clientHeight - panelRect.height - 10;
+    }
+    if (top < 10) top = 10;
+
+    infoPanel.style.left = left + 'px';
+    infoPanel.style.top = top + 'px';
   } else {
     selectedObject = null;
     originalMaterial = null;
@@ -190,7 +206,7 @@ renderer.domElement.addEventListener('click', (event) => {
   const intersects = raycaster.intersectObjects(visibleObjects);
 
   if (intersects.length > 0) {
-    selectObject(intersects[0].object);
+    selectObject(intersects[0].object, event.clientX, event.clientY);
   } else {
     selectObject(null);
   }
