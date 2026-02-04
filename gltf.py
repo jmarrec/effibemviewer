@@ -16,6 +16,10 @@ env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
 def model_to_gltf_json(model: openstudio.model.Model, include_geometry_diagnostics: bool = False) -> dict:
     ft = openstudio.gltf.GltfForwardTranslator()
     if include_geometry_diagnostics:
+        if not callable(getattr(openstudio.gltf.GltfForwardTranslator, "setIncludeGeometryDiagnostics", None)):
+            raise ValueError(
+                "Geometry diagnostics not supported in this version of OpenStudio. Please update to use this feature."
+            )
         ft.setIncludeGeometryDiagnostics(True)
     return ft.modelToGLTFJSON(model)
 
@@ -76,18 +80,61 @@ def display_model(
     Returns:
         IPython display object (HTML or IFrame)
     """
-    from IPython.display import HTML, IFrame
     import base64
 
+    from IPython.display import HTML, IFrame
+
     if use_iframe:
-        full_html = model_to_gltf_html(model=model, height=height, include_geometry_diagnostics=include_geometry_diagnostics)
+        full_html = model_to_gltf_html(
+            model=model, height=height, include_geometry_diagnostics=include_geometry_diagnostics
+        )
         data_url = f"data:text/html;base64,{base64.b64encode(full_html.encode()).decode()}"
         # Parse height for IFrame (needs integer pixels)
         h = int(height.replace("px", "")) if height.endswith("px") else 500
         return IFrame(src=data_url, width="100%", height=h)
 
-    fragment = model_to_gltf_script(model=model, height=height, include_geometry_diagnostics=include_geometry_diagnostics)
+    fragment = model_to_gltf_script(
+        model=model, height=height, include_geometry_diagnostics=include_geometry_diagnostics
+    )
     return HTML(fragment)
+
+
+def create_example_model(include_geometry_diagnostics: bool = False) -> openstudio.model.Model:
+    """Create an example OpenStudio model with two stories and optionally geometry diagnostics.
+
+    Args:
+        include_geometry_diagnostics: If True, will reverse a surface on purpose
+
+    Returns:
+        model (openstudio.model.Model): Example model
+    """
+    model = openstudio.model.exampleModel()
+    space = model.getSpaceByName("Space 1").get()
+    # Move space type assignment from Building to Space, so I can have one without it
+    space_type = space.spaceType().get()
+    [space.setSpaceType(space_type) for space in model.getSpaces()]
+    b = model.getBuilding()
+    b.setNorthAxis(45)
+    b.resetSpaceType()
+
+    space_clone = space.clone(model).to_Space().get()
+    space_clone.setName("Space Level 2")
+    space_clone.resetSpaceType()
+    # Set it above the original space for better viewing
+    z = space.boundingBox().maxZ().get()
+    assert z == 3.0
+    space_clone.setZOrigin(z)
+    story2 = openstudio.model.BuildingStory(model)
+    story2.setName("Second Story")
+    story2.setNominalZCoordinate(z)
+    story2.setNominalFloortoFloorHeight(z)
+    space_clone.setBuildingStory(story2)
+
+    if include_geometry_diagnostics:
+        surface = next(s for s in space_clone.surfaces() if s.surfaceType() == "Wall")
+        surface.setVertices(openstudio.reverse(surface.vertices()))  # Make one surface incorrectly oriented
+
+    return model
 
 
 if __name__ == "__main__":
@@ -103,35 +150,9 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    model = openstudio.model.exampleModel()
-    space = model.getSpaceByName("Space 1").get()
-    # Move space type assignment from Building to Space, so I can have one without it
-    space_type = space.spaceType().get()
-    [space.setSpaceType(space_type) for space in model.getSpaces()]
-    model.getBuilding().resetSpaceType()
-
-    space_clone = space.clone(model).to_Space().get()
-    space_clone.setName("Space Level 2")
-    space_clone.resetSpaceType()
-    # Set it above the original space for better viewing
-    z = space.boundingBox().maxZ().get()
-    assert z == 3.0
-    space_clone.setZOrigin(z)
-    story2 = openstudio.model.BuildingStory(model)
-    story2.setName("Second Story")
-    story2.setNominalZCoordinate(z)
-    story2.setNominalFloortoFloorHeight(z)
-    space_clone.setBuildingStory(story2)
-
-    if args.geometry_diagnostics:
-        if not callable(getattr(openstudio.gltf.GltfForwardTranslator, "setIncludeGeometryDiagnostics", None)):
-            print(
-                "Geometry diagnostics not supported in this version of OpenStudio. Please update to use this feature."
-            )
-            sys.exit(1)
-        surface = next(s for s in space_clone.surfaces() if s.surfaceType() == "Wall")
-        surface.setVertices(openstudio.reverse(surface.vertices()))  # Make one surface incorrectly oriented
+    model = create_example_model(include_geometry_diagnostics=args.geometry_diagnostics)
 
     args.output.write_text(
         model_to_gltf_html(model=model, pretty_json=True, include_geometry_diagnostics=args.geometry_diagnostics)
     )
+    model.save("model.osm", True)

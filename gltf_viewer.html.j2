@@ -568,6 +568,38 @@ loader.parse(
 
     // Position camera using bounding box from GLTF metadata
     const bbox = gltfData.scenes?.[0]?.extras?.boundingbox;
+
+    // Add axes (X=red, Y=green, Z=blue) - converted from OpenStudio Z-up to Three.js Y-up
+    const axisSize = bbox ? bbox.lookAtR * 4 : 10;
+
+    const xAxisGeometry = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(0, 0, 0), new THREE.Vector3(axisSize, 0, 0)
+    ]);
+    scene.add(new THREE.Line(xAxisGeometry, new THREE.LineBasicMaterial({ color: 0xff0000 })));
+
+    // OpenStudio Y -> Three.js -Z
+    const yAxisGeometry = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, -axisSize)
+    ]);
+    scene.add(new THREE.Line(yAxisGeometry, new THREE.LineBasicMaterial({ color: 0x00ff00 })));
+
+    // OpenStudio Z -> Three.js Y
+    const zAxisGeometry = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, axisSize, 0)
+    ]);
+    scene.add(new THREE.Line(zAxisGeometry, new THREE.LineBasicMaterial({ color: 0x0000ff })));
+
+    // North axis (orange) if northAxis is set
+    const northAxis = gltfData.scenes?.[0]?.extras?.northAxis;
+    if (northAxis && northAxis !== 0) {
+      const northAxisRad = -northAxis * Math.PI / 180.0;
+      const northAxisGeometry = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(-Math.sin(northAxisRad) * axisSize, 0, -Math.cos(northAxisRad) * axisSize)
+      ]);
+      scene.add(new THREE.Line(northAxisGeometry, new THREE.LineBasicMaterial({ color: 0xff9933 })));
+    }
+
     if (bbox) {
       // Convert from OpenStudio coords (Z-up) to Three.js coords (Y-up)
       const lookAt = new THREE.Vector3(bbox.lookAtX, bbox.lookAtZ, -bbox.lookAtY);
