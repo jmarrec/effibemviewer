@@ -149,6 +149,8 @@ const sceneObjects = [];
 const objectEdges = new Map();
 // Map mesh -> back face object
 const backObjects = new Map();
+// Map back object -> front object (for selection)
+const backToFront = new Map();
 
 // Selection state
 const raycaster = new THREE.Raycaster();
@@ -164,16 +166,30 @@ const selectedMaterial = new THREE.MeshStandardMaterial({
 
 const infoPanel = document.getElementById('info-panel');
 
+let selectedBackWasVisible = false;
+
 function selectObject(obj, clickX, clickY) {
   // Restore previous selection
   if (selectedObject && originalMaterial) {
     selectedObject.material = originalMaterial;
+    // Restore back object visibility
+    const prevBackObj = backObjects.get(selectedObject);
+    if (prevBackObj) {
+      prevBackObj.visible = selectedBackWasVisible;
+    }
   }
 
   if (obj) {
     selectedObject = obj;
     originalMaterial = obj.material;
     obj.material = selectedMaterial;
+
+    // Hide back object so yellow selection shows through
+    const backObj = backObjects.get(obj);
+    if (backObj) {
+      selectedBackWasVisible = backObj.visible;
+      backObj.visible = false;
+    }
 
     // Update info panel with all available details
     const data = obj.userData;
@@ -280,11 +296,20 @@ renderer.domElement.addEventListener('click', (event) => {
 
   raycaster.setFromCamera(mouse, camera);
 
+  // Include both front and back objects for picking
   const visibleObjects = sceneObjects.filter(obj => obj.visible);
-  const intersects = raycaster.intersectObjects(visibleObjects);
+  const visibleBackObjects = [...backObjects.values()].filter(obj => obj.visible);
+  const allPickable = [...visibleObjects, ...visibleBackObjects];
+
+  const intersects = raycaster.intersectObjects(allPickable);
 
   if (intersects.length > 0) {
-    selectObject(intersects[0].object, event.clientX, event.clientY);
+    let hitObj = intersects[0].object;
+    // If we hit a back object, resolve to its front object
+    if (backToFront.has(hitObj)) {
+      hitObj = backToFront.get(hitObj);
+    }
+    selectObject(hitObj, event.clientX, event.clientY);
   } else {
     selectObject(null);
   }
@@ -511,6 +536,7 @@ loader.parse(
         });
         obj.parent.add(backObj);
         backObjects.set(obj, backObj);
+        backToFront.set(backObj, obj);
 
         // Create edge lines for this mesh
         const edgesGeometry = new THREE.EdgesGeometry(obj.geometry);
