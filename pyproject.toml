@@ -36,6 +36,7 @@ jinja2 = "^3.1"
 black = "^26.1"
 isort = "^7.0"
 pytest = "^9.0"
+mypy = "^1.19"
 
 [tool.black]
 line-length = 120
