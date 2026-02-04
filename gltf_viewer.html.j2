@@ -22,6 +22,23 @@
   }
   #controls label { display: block; margin: 4px 0; cursor: pointer; }
   #controls input { margin-right: 6px; }
+  #info-panel {
+    display: none;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(255,255,255,0.95);
+    padding: 10px 14px;
+    border-radius: 4px;
+    font-family: sans-serif;
+    font-size: 12px;
+    z-index: 100;
+    max-width: 300px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  #info-panel h4 { margin: 0 0 8px 0; font-size: 13px; }
+  #info-panel .info-row { margin: 4px 0; }
+  #info-panel .info-label { color: #666; }
 </style>
 
 <div id="viewer">
@@ -34,6 +51,13 @@
     <label><input type="checkbox" id="showDoors" checked> Doors</label>
     <label><input type="checkbox" id="showShading" checked> Shading</label>
     <label><input type="checkbox" id="showPartitions" checked> Partitions</label>
+  </div>
+  <div id="info-panel">
+    <h4 id="info-name"></h4>
+    <div class="info-row"><span class="info-label">Type:</span> <span id="info-type"></span></div>
+    <div class="info-row" id="info-space-row"><span class="info-label">Space:</span> <span id="info-space"></span></div>
+    <div class="info-row" id="info-construction-row"><span class="info-label">Construction:</span> <span id="info-construction"></span></div>
+    <div class="info-row" id="info-boundary-row"><span class="info-label">Boundary:</span> <span id="info-boundary"></span></div>
   </div>
 </div>
 
@@ -64,8 +88,103 @@ window.addEventListener('resize', () => {
 scene.add(new THREE.AmbientLight(0xbbbbbb));
 scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 0.6));
 
-// Collect all meshes for filtering
+// Collect all meshes for filtering and selection
 const sceneObjects = [];
+
+// Selection state
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+let selectedObject = null;
+let originalMaterial = null;
+
+const selectedMaterial = new THREE.MeshStandardMaterial({
+  color: 0xffff00,
+  emissive: 0x444400,
+  side: THREE.DoubleSide
+});
+
+const infoPanel = document.getElementById('info-panel');
+
+function selectObject(obj) {
+  // Restore previous selection
+  if (selectedObject && originalMaterial) {
+    selectedObject.material = originalMaterial;
+  }
+
+  if (obj) {
+    selectedObject = obj;
+    originalMaterial = obj.material;
+    obj.material = selectedMaterial;
+
+    // Update info panel
+    const data = obj.userData;
+    document.getElementById('info-name').textContent = data.name || 'Unknown';
+    document.getElementById('info-type').textContent = data.surfaceType || '';
+
+    const spaceRow = document.getElementById('info-space-row');
+    const space = document.getElementById('info-space');
+    if (data.spaceName) {
+      space.textContent = data.spaceName;
+      spaceRow.style.display = 'block';
+    } else {
+      spaceRow.style.display = 'none';
+    }
+
+    const constructionRow = document.getElementById('info-construction-row');
+    const construction = document.getElementById('info-construction');
+    if (data.constructionName) {
+      construction.textContent = data.constructionName;
+      constructionRow.style.display = 'block';
+    } else {
+      constructionRow.style.display = 'none';
+    }
+
+    const boundaryRow = document.getElementById('info-boundary-row');
+    const boundary = document.getElementById('info-boundary');
+    if (data.outsideBoundaryCondition) {
+      boundary.textContent = data.outsideBoundaryCondition;
+      boundaryRow.style.display = 'block';
+    } else {
+      boundaryRow.style.display = 'none';
+    }
+
+    infoPanel.style.display = 'block';
+  } else {
+    selectedObject = null;
+    originalMaterial = null;
+    infoPanel.style.display = 'none';
+  }
+}
+
+// Track mouse position for click vs drag detection
+let mouseDownPos = { x: 0, y: 0 };
+
+renderer.domElement.addEventListener('mousedown', (event) => {
+  mouseDownPos.x = event.clientX;
+  mouseDownPos.y = event.clientY;
+});
+
+renderer.domElement.addEventListener('click', (event) => {
+  // Ignore if this was a drag (camera orbit)
+  const dx = event.clientX - mouseDownPos.x;
+  const dy = event.clientY - mouseDownPos.y;
+  if (Math.abs(dx) > 5 || Math.abs(dy) > 5) return;
+
+  const rect = renderer.domElement.getBoundingClientRect();
+  mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+
+  const visibleObjects = sceneObjects.filter(obj => obj.visible);
+  const intersects = raycaster.intersectObjects(visibleObjects);
+
+  if (intersects.length > 0) {
+    selectObject(intersects[0].object);
+  } else {
+    selectObject(null);
+  }
+});
 
 function updateVisibility() {
   const showFloors = document.getElementById('showFloors').checked;
