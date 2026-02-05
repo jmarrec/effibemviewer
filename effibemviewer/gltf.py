@@ -5,10 +5,14 @@ from typing import TYPE_CHECKING
 import openstudio
 from jinja2 import Environment, PackageLoader
 
+from effibemviewer import __version__
+
 if TYPE_CHECKING:
     from IPython.display import HTML, IFrame
 
 env = Environment(loader=PackageLoader("effibemviewer", "templates"))
+
+CDN_BASE_URL = f"https://cdn.jsdelivr.net/gh/jmarrec/effibemviewer@v{__version__}/public/cdn"
 
 
 def model_to_gltf_json(model: openstudio.model.Model, include_geometry_diagnostics: bool = False) -> dict:
@@ -62,6 +66,7 @@ def model_to_gltf_html(
     embedded: bool = True,
     loader_mode: bool = False,
     script_only: bool = False,
+    cdn: bool = False,
 ) -> str:
     """Generate a full standalone HTML page for viewing an OpenStudio model.
 
@@ -71,6 +76,9 @@ def model_to_gltf_html(
         pretty_json: If True, format JSON with indentation
         include_geometry_diagnostics: If True, include geometry diagnostic info
         embedded: If True, inline the JS library. If False, reference external JS file.
+        loader_mode: If True, generate file-input loader instead of embedding model data
+        script_only: If True, generate only the script fragment (for Jupyter)
+        cdn: If True, reference JS/CSS from jsDelivr CDN (overrides embedded)
     """
     data = model_to_gltf_json(model=model, include_geometry_diagnostics=include_geometry_diagnostics)
 
@@ -85,6 +93,7 @@ def model_to_gltf_html(
         embedded=embedded,
         loader_mode=loader_mode,
         script_only=script_only,
+        cdn_base_url=CDN_BASE_URL if cdn else None,
     )
 
 
@@ -141,6 +150,7 @@ def generate_loader_html(
     height: str = "100vh",
     include_geometry_diagnostics: bool = False,
     embedded: bool = True,
+    cdn: bool = False,
 ) -> str:
     """Generate a standalone HTML page with a file input for loading GLTF files.
 
@@ -148,6 +158,7 @@ def generate_loader_html(
         height: CSS height value (default "100vh" for full viewport)
         include_geometry_diagnostics: If True, enable geometry diagnostic display
         embedded: If True, inline the JS library. If False, reference external JS file.
+        cdn: If True, reference JS/CSS from jsDelivr CDN (overrides embedded)
 
     Returns:
         str: Full HTML page with file input for loading GLTF files
@@ -162,6 +173,7 @@ def generate_loader_html(
         embedded=embedded,
         loader_mode=True,
         script_only=False,
+        cdn_base_url=CDN_BASE_URL if cdn else None,
     )
     return html
 

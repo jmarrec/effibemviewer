@@ -37,16 +37,17 @@ def main():
     parser.add_argument(
         "-o", "--output", type=Path, default=Path("viewer.html"), help="Output HTML file path (default: viewer.html)"
     )
-    # --embbeded and --cdn are mutually exclusive options for how to include the JS library
-    parser.add_argument(
+    # --embedded and --cdn are mutually exclusive options for how to include the JS library
+    lib_mode = parser.add_mutually_exclusive_group()
+    lib_mode.add_argument(
         "--embedded",
         action="store_true",
         help="Embed JS library inline in HTML (default: generate separate effibemviewer.js file)",
     )
-    parser.add_argument(
+    lib_mode.add_argument(
         "--cdn",
         action="store_true",
-        help="Reference JS library from CDN instead of embedding or generating local file (overrides --embedded)",
+        help="Reference JS library from CDN instead of embedding or generating local file",
     )
 
     parser.add_argument(
@@ -78,7 +79,7 @@ def main():
         html_content = generate_loader_html(
             include_geometry_diagnostics=args.geometry_diagnostics,
             embedded=args.embedded,
-            # TODO: add cdn
+            cdn=args.cdn,
         )
         args.output.write_text(html_content)
         print(f"Generated: {args.output}")
@@ -105,6 +106,7 @@ def main():
         pretty_json=args.pretty,
         include_geometry_diagnostics=args.geometry_diagnostics,
         embedded=args.embedded,
+        cdn=args.cdn,
     )
     args.output.write_text(html_content)
     print(f"Generated: {args.output}")

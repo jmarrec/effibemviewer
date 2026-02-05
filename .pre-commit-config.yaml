@@ -1,4 +1,13 @@
 repos:
+  #- repo: local
+    #hooks:
+      #- id: build-dist
+        #name: Build viewer dist
+        #entry: bash -c 'make dist && git add public/'
+        #language: system
+        #pass_filenames: false
+        #files: ^effibemviewer/templates/
+
   - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: v1.5.6
     hooks:
@@ -32,11 +41,3 @@ repos:
     hooks:
       - id: mypy
         exclude: tests/
-  - repo: local
-    hooks:
-      - id: build-dist
-        name: Build viewer dist
-        entry: bash -c 'make dist && git add public/'
-        language: system
-        pass_filenames: false
-        files: ^effibemviewer/templates/

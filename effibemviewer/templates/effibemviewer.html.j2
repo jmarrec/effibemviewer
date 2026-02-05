@@ -18,7 +18,10 @@
     <link rel="manifest" href="https://effibem.com/images/ico/site.webmanifest">
 {% endif %}
 
-{% if embedded %}
+{# CDN takes precedence over embedded, so check cdn_base_url first #}
+{% if cdn_base_url %}
+    <link rel="stylesheet" href="{{ cdn_base_url }}/effibemviewer.css">
+{% elif embedded %}
     <style>
 {% include "effibemviewer.css.j2" %}
     </style>
@@ -121,7 +124,10 @@
 }
   </script>
 
-{% if embedded %}
+{# CDN takes precedence over embedded, so check cdn_base_url first #}
+{% if cdn_base_url %}
+  <script type="module" src="{{ cdn_base_url }}/effibemviewer.js"></script>
+{% elif embedded %}
   <script type="module">
 {% include "effibemviewer.js.j2" %}
   </script>

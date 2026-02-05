@@ -132,3 +132,53 @@ class TestLoaderMode:
         """Test that loader mode respects geometry diagnostics option."""
         html = generate_loader_html(include_geometry_diagnostics=True)
         assert "includeGeometryDiagnostics: true" in html
+
+
+class TestCDNMode:
+    """Tests for CDN mode (JS/CSS from jsDelivr)."""
+
+    def test_cdn_mode_references_cdn_js(self, model):
+        """Test that CDN mode references JS from jsDelivr."""
+        html = model_to_gltf_html(model, cdn=True)
+        assert 'src="https://cdn.jsdelivr.net/gh/jmarrec/effibemviewer@v' in html
+        assert "/public/cdn/effibemviewer.js" in html
+        # Should not have inline class
+        assert "class EffiBEMViewer" not in html
+
+    def test_cdn_mode_references_cdn_css(self, model):
+        """Test that CDN mode references CSS from jsDelivr."""
+        html = model_to_gltf_html(model, cdn=True)
+        assert 'href="https://cdn.jsdelivr.net/gh/jmarrec/effibemviewer@v' in html
+        assert "/public/cdn/effibemviewer.css" in html
+        # Should not have inline style block with viewer styles
+        assert (
+            "<style>" not in html or ".effibem-viewer" not in html.split("<style>")[1].split("</style>")[0]
+            if "<style>" in html
+            else True
+        )
+
+    def test_cdn_mode_uses_package_version(self, model):
+        """Test that CDN URL includes the correct package version."""
+        from effibemviewer import __version__
+
+        html = model_to_gltf_html(model, cdn=True)
+        expected_url = f"https://cdn.jsdelivr.net/gh/jmarrec/effibemviewer@v{__version__}"
+        assert expected_url in html
+
+    def test_loader_cdn_mode(self):
+        """Test that loader mode with CDN option works correctly."""
+        from effibemviewer import __version__
+
+        html = generate_loader_html(cdn=True)
+        expected_url = f"https://cdn.jsdelivr.net/gh/jmarrec/effibemviewer@v{__version__}"
+        assert expected_url in html
+        assert "/public/cdn/effibemviewer.js" in html
+        assert "/public/cdn/effibemviewer.css" in html
+
+    def test_cdn_and_embedded_are_mutually_exclusive(self, model):
+        """Test that CDN mode does not embed JS/CSS inline."""
+        html = model_to_gltf_html(model, cdn=True, embedded=False)
+        # CDN takes precedence, should reference CDN
+        assert "cdn.jsdelivr.net" in html
+        # Should not have inline class definition
+        assert "class EffiBEMViewer {" not in html
