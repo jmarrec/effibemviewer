@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-02-05
+
+### Added
+- Reusable `EffiBEMViewer` JavaScript class with public API
+- `runFromJSON()`, `runFromFile()`, `runFromFileObject()` convenience functions
+- `--loader` CLI mode to generate file-input HTML for loading local GLTF files
+- `--embedded` CLI flag to inline JS/CSS vs external files
+- Header with EffiBEM logo
+- CDN-ready distribution in `public/` folder (embedded and cdn variants)
+- Pre-commit hook to auto-rebuild dist when templates change
+
+### Changed
+- Upgraded Three.js from 0.160 to 0.182
+- Switched CDN from unpkg to jsDelivr
+- Refactored templates into separate JS and CSS files
+
 ## [0.1.2] - 2026-02-05
 
 - docs update
@@ -30,7 +46,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Back face coloring for orientation detection
 - X, Y, Z axes display
 
-[Unreleased]: https://github.com/jmarrec/effibemviewer/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/jmarrec/effibemviewer/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/jmarrec/effibemviewer/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/jmarrec/effibemviewer/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/jmarrec/effibemviewer/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/jmarrec/effibemviewer/releases/tag/v0.1.0
