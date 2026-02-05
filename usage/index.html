@@ -14,7 +14,7 @@
         <link rel="prev" href="../installation/">
       
       
-        <link rel="next" href="../api/">
+        <link rel="next" href="../javascript/">
       
       
         
@@ -50,6 +50,8 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
+    
+      <link rel="stylesheet" href="../assets/_markdown_exec_pyodide.css">
     
       <link rel="stylesheet" href="../assets/_mkdocstrings.css">
     
@@ -363,10 +365,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#Generate-standalone-HTML" class="md-nav__link">
+  <a href="#Generate-Standalone-HTML" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Generate standalone HTML
+        Generate Standalone HTML
       
     </span>
   </a>
@@ -374,33 +376,22 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#Command-Line" class="md-nav__link">
+  <a href="#Command-Line-Interface" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Command Line
+        Command Line Interface
       
     </span>
   </a>
   
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#JavaScript-API" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        JavaScript API
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="JavaScript API">
+    <nav class="md-nav" aria-label="Command Line Interface">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#Global-Functions" class="md-nav__link">
+  <a href="#Basic-Usage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Global Functions
+        Basic Usage
       
     </span>
   </a>
@@ -408,10 +399,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#EffiBEMViewer-Class" class="md-nav__link">
+  <a href="#Options" class="md-nav__link">
     <span class="md-ellipsis">
       
-        EffiBEMViewer Class
+        Options
       
     </span>
   </a>
@@ -419,10 +410,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#Required-HTML-Structure" class="md-nav__link">
+  <a href="#Library-Mode-Options" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Required HTML Structure
+        Library Mode Options
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#Loader-Mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Loader Mode
       
     </span>
   </a>
@@ -454,6 +456,33 @@
   
   
     <li class="md-nav__item">
+      <a href="../javascript/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    JavaScript Library
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../api/" class="md-nav__link">
         
   
@@ -461,7 +490,7 @@
   <span class="md-ellipsis">
     
   
-    Modules
+    API Reference
   
 
     
@@ -576,10 +605,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#Generate-standalone-HTML" class="md-nav__link">
+  <a href="#Generate-Standalone-HTML" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Generate standalone HTML
+        Generate Standalone HTML
       
     </span>
   </a>
@@ -587,33 +616,22 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#Command-Line" class="md-nav__link">
+  <a href="#Command-Line-Interface" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Command Line
+        Command Line Interface
       
     </span>
   </a>
   
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#JavaScript-API" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        JavaScript API
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="JavaScript API">
+    <nav class="md-nav" aria-label="Command Line Interface">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#Global-Functions" class="md-nav__link">
+  <a href="#Basic-Usage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Global Functions
+        Basic Usage
       
     </span>
   </a>
@@ -621,10 +639,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#EffiBEMViewer-Class" class="md-nav__link">
+  <a href="#Options" class="md-nav__link">
     <span class="md-ellipsis">
       
-        EffiBEMViewer Class
+        Options
       
     </span>
   </a>
@@ -632,10 +650,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#Required-HTML-Structure" class="md-nav__link">
+  <a href="#Library-Mode-Options" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Required HTML Structure
+        Library Mode Options
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#Loader-Mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Loader Mode
       
     </span>
   </a>
@@ -687,44 +716,15 @@
     <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
     <span class="n">height</span><span class="o">=</span><span class="s2">&quot;500px&quot;</span><span class="p">,</span>
     <span class="n">use_iframe</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">include_geometry_diagnostics</span><span class="o">=</span><span class="kc">False</span>
+    <span class="n">include_geometry_diagnostics</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">cdn</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># Set to True for better caching on re-runs</span>
 <span class="p">)</span>
 </code></pre></div>
-<p><strong>Note</strong>: <code>use_iframe=True</code> is not needed unless you are using <code>jupyter nbclassic</code> (and not <code>notebook</code> (V7) or <code>lab</code>)</p>
-<p><strong>Note</strong>: OpenStudio, as of 3.11.0, does NOT export geometry diagnostics in GLTF. I am adding this myself locally, but will upstream my changes.</p>
-<h3 id="Generate-standalone-HTML">Generate standalone HTML<a class="headerlink" href="#Generate-standalone-HTML" title="Permanent link">&para;</a></h3>
-<p>To generate a standalone HTML file:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">effibemviewer</span><span class="w"> </span><span class="kn">import</span> <span class="n">model_to_gltf_html</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-
-<span class="n">html</span> <span class="o">=</span> <span class="n">model_to_gltf_html</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
-<span class="n">Path</span><span class="p">(</span><span class="s2">&quot;viewer.html&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
-</code></pre></div>
-<h3 id="Command-Line">Command Line<a class="headerlink" href="#Command-Line" title="Permanent link">&para;</a></h3>
-<p>Generate an HTML viewer from the command line:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>effibemviewer<span class="w"> </span>--model<span class="w"> </span>mymodel.osm<span class="w"> </span>--output<span class="w"> </span>output.html
-</code></pre></div>
-<p>With geometry diagnostics enabled, and when <code>--model</code> is omitted it uses the <code>create_example_model</code></p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>effibemviewer<span class="w"> </span>--geometry-diagnostics<span class="w"> </span>--output<span class="w"> </span>output.html
-</code></pre></div>
-<h3 id="JavaScript-API">JavaScript API<a class="headerlink" href="#JavaScript-API" title="Permanent link">&para;</a></h3>
-<p>The generated HTML exposes a JavaScript API that allows you to load and display GLTF models programmatically. This is useful if you want to integrate the viewer into your own web application or load models dynamically.</p>
-<h4 id="Global-Functions">Global Functions<a class="headerlink" href="#Global-Functions" title="Permanent link">&para;</a></h4>
-<p>Two convenience functions are exposed globally, matching the API of OpenStudio's <code>geometry_preview.html</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="c1">// Load from a JSON object (GLTF data)</span>
-<span class="nx">runFromJSON</span><span class="p">(</span><span class="nx">gltfData</span><span class="p">,</span><span class="w"> </span><span class="nx">options</span><span class="p">);</span>
-
-<span class="c1">// Load from a URL (requires HTTP server, won&#39;t work with file://)</span>
-<span class="nx">runFromFile</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span><span class="w"> </span><span class="nx">options</span><span class="p">);</span>
-
-<span class="c1">// Load from a File object (works with local files via &lt;input type=&quot;file&quot;&gt;)</span>
-<span class="nx">runFromFileObject</span><span class="p">(</span><span class="nx">file</span><span class="p">,</span><span class="w"> </span><span class="nx">options</span><span class="p">);</span>
-</code></pre></div>
-<p><strong>Options:</strong></p>
+<p><strong>Parameters:</strong></p>
 <table>
 <thead>
 <tr>
-<th>Option</th>
+<th>Parameter</th>
 <th>Type</th>
 <th>Default</th>
 <th>Description</th>
@@ -732,75 +732,207 @@
 </thead>
 <tbody>
 <tr>
-<td><code>containerId</code></td>
-<td>string</td>
-<td><code>'viewer'</code></td>
-<td>ID of the container element</td>
+<td><code>model</code></td>
+<td><code>openstudio.model.Model</code></td>
+<td>required</td>
+<td>The OpenStudio model to display</td>
 </tr>
 <tr>
-<td><code>includeGeometryDiagnostics</code></td>
-<td>boolean</td>
-<td><code>false</code></td>
+<td><code>height</code></td>
+<td><code>str</code></td>
+<td><code>"500px"</code></td>
+<td>CSS height value for the viewer</td>
+</tr>
+<tr>
+<td><code>use_iframe</code></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Use IFrame for nbclassic compatibility</td>
+</tr>
+<tr>
+<td><code>include_geometry_diagnostics</code></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
 <td>Show geometry diagnostic controls</td>
+</tr>
+<tr>
+<td><code>cdn</code></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Load JS/CSS from CDN (better caching on re-runs)</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Example:</strong></p>
-<div class="highlight"><pre><span></span><code><span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;viewer&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;effibem-viewer&quot;</span><span class="p">&gt;</span>
-  <span class="cm">&lt;!-- Controls and info panel structure here --&gt;</span>
-<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-
-<span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;module&quot;</span><span class="p">&gt;</span>
-<span class="w">  </span><span class="c1">// Assuming the viewer script is loaded...</span>
-
-<span class="w">  </span><span class="c1">// Load from a URL</span>
-<span class="w">  </span><span class="nx">runFromFile</span><span class="p">(</span><span class="s1">&#39;./model.gltf&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">includeGeometryDiagnostics</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">});</span>
-
-<span class="w">  </span><span class="c1">// Or load from a JSON object</span>
-<span class="w">  </span><span class="nx">fetch</span><span class="p">(</span><span class="s1">&#39;./model.gltf&#39;</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">r</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">r</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
-<span class="w">    </span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">data</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">runFromJSON</span><span class="p">(</span><span class="nx">data</span><span class="p">));</span>
-<span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
-</code></pre></div>
-<h4 id="EffiBEMViewer-Class">EffiBEMViewer Class<a class="headerlink" href="#EffiBEMViewer-Class" title="Permanent link">&para;</a></h4>
-<p>For more control, you can use the <code>EffiBEMViewer</code> class directly:</p>
-<div class="highlight"><pre><span></span><code><span class="c1">// Create a viewer instance</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">viewer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">EffiBEMViewer</span><span class="p">(</span><span class="s1">&#39;my-container&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">includeGeometryDiagnostics</span><span class="o">:</span><span class="w"> </span><span class="kc">true</span>
-<span class="p">});</span>
-
-<span class="c1">// Load a model from JSON</span>
-<span class="nx">viewer</span><span class="p">.</span><span class="nx">loadFromJSON</span><span class="p">(</span><span class="nx">gltfData</span><span class="p">);</span>
-
-<span class="c1">// Or load from a URL (returns a Promise)</span>
-<span class="nx">viewer</span><span class="p">.</span><span class="nx">loadFromFile</span><span class="p">(</span><span class="s1">&#39;./model.gltf&#39;</span><span class="p">)</span>
-<span class="w">  </span><span class="p">.</span><span class="nx">then</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Model loaded&#39;</span><span class="p">));</span>
-
-<span class="c1">// Or load from a File object (e.g., from file input)</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">fileInput</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">&#39;input[type=&quot;file&quot;]&#39;</span><span class="p">);</span>
-<span class="nx">fileInput</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;change&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">viewer</span><span class="p">.</span><span class="nx">loadFromFileObject</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">files</span><span class="p">[</span><span class="mf">0</span><span class="p">])</span>
-<span class="w">    </span><span class="p">.</span><span class="nx">then</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Model loaded from file&#39;</span><span class="p">));</span>
-<span class="p">});</span>
-</code></pre></div>
-<p>The class provides access to the Three.js scene, camera, and renderer for advanced customization:</p>
-<div class="highlight"><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">viewer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">EffiBEMViewer</span><span class="p">(</span><span class="s1">&#39;viewer&#39;</span><span class="p">);</span>
-<span class="nx">viewer</span><span class="p">.</span><span class="nx">loadFromJSON</span><span class="p">(</span><span class="nx">gltfData</span><span class="p">);</span>
-
-<span class="c1">// Access Three.js objects</span>
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">viewer</span><span class="p">.</span><span class="nx">scene</span><span class="p">);</span><span class="w">       </span><span class="c1">// THREE.Scene</span>
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">viewer</span><span class="p">.</span><span class="nx">camera</span><span class="p">);</span><span class="w">      </span><span class="c1">// THREE.PerspectiveCamera</span>
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">viewer</span><span class="p">.</span><span class="nx">renderer</span><span class="p">);</span><span class="w">    </span><span class="c1">// THREE.WebGLRenderer</span>
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">viewer</span><span class="p">.</span><span class="nx">orbitControls</span><span class="p">);</span><span class="w"> </span><span class="c1">// OrbitControls</span>
-</code></pre></div>
-<h4 id="Required-HTML-Structure">Required HTML Structure<a class="headerlink" href="#Required-HTML-Structure" title="Permanent link">&para;</a></h4>
-<p>The viewer expects a container with the <code>effibem-viewer</code> class and specific child elements for controls and info panel. The easiest way to get the correct structure is to use the Python API to generate the HTML, then customize as needed:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>use_iframe=True</code> is only needed if you are using <code>jupyter nbclassic</code> (not <code>notebook</code> V7 or <code>lab</code>)</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>OpenStudio, as of 3.11.0, does NOT export geometry diagnostics in GLTF. This feature requires a patched version.</p>
+</div>
+<h3 id="Generate-Standalone-HTML">Generate Standalone HTML<a class="headerlink" href="#Generate-Standalone-HTML" title="Permanent link">&para;</a></h3>
+<p>To generate a standalone HTML file programmatically:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">effibemviewer</span><span class="w"> </span><span class="kn">import</span> <span class="n">model_to_gltf_html</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
-<span class="c1"># Generate HTML with empty/minimal model, then replace the data</span>
 <span class="n">html</span> <span class="o">=</span> <span class="n">model_to_gltf_html</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<span class="n">Path</span><span class="p">(</span><span class="s2">&quot;viewer.html&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
 </code></pre></div>
-<p>Alternatively, you can create your own container and only include the controls you need. The viewer uses class-based selectors (e.g., <code>.showFloors</code>, <code>.renderBy</code>) rather than IDs, allowing multiple viewers on the same page.</p>
+<p><strong>Parameters:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>model</code></td>
+<td><code>openstudio.model.Model</code></td>
+<td>required</td>
+<td>The OpenStudio model to render</td>
+</tr>
+<tr>
+<td><code>height</code></td>
+<td><code>str</code></td>
+<td><code>"100vh"</code></td>
+<td>CSS height value</td>
+</tr>
+<tr>
+<td><code>pretty_json</code></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Format JSON with indentation</td>
+</tr>
+<tr>
+<td><code>include_geometry_diagnostics</code></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Include geometry diagnostic info</td>
+</tr>
+<tr>
+<td><code>embedded</code></td>
+<td><code>bool</code></td>
+<td><code>True</code></td>
+<td>Inline JS/CSS in HTML</td>
+</tr>
+<tr>
+<td><code>cdn</code></td>
+<td><code>bool</code></td>
+<td><code>False</code></td>
+<td>Reference JS/CSS from jsDelivr CDN</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Command-Line-Interface">Command Line Interface<a class="headerlink" href="#Command-Line-Interface" title="Permanent link">&para;</a></h3>
+<p>Generate an HTML viewer from the command line:</p>
+<div class="highlight"><pre><span></span><code>usage: python -m effibemviewer [-h] [-m MODEL] [-g] [-o OUTPUT]
+                               [--embedded | --cdn] [--pretty] [--loader]
+
+Generate GLTF viewer HTML from OpenStudio model
+
+options:
+  -h, --help            show this help message and exit
+  -m MODEL, --model MODEL
+                        Path to the OpenStudio model file (optional, defaults
+                        to an example model)
+  -g, --geometry-diagnostics
+                        Include geometry diagnostics (convex, correctly
+                        oriented, etc.)
+  -o OUTPUT, --output OUTPUT
+                        Output HTML file path (default: viewer.html)
+  --embedded            Embed JS library inline in HTML (default: generate
+                        separate effibemviewer.js file)
+  --cdn                 Reference JS library from CDN instead of embedding or
+                        generating local file
+  --pretty              Pretty-print the JSON output in the HTML (default:
+                        compact JSON)
+  --loader              Generate a loader HTML with file input instead of
+                        embedding model data
+</code></pre></div>
+<h4 id="Basic-Usage">Basic Usage<a class="headerlink" href="#Basic-Usage" title="Permanent link">&para;</a></h4>
+<p>Generate a viewer with an OpenStudio model:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>effibemviewer<span class="w"> </span>--model<span class="w"> </span>mymodel.osm<span class="w"> </span>--output<span class="w"> </span>viewer.html
+</code></pre></div>
+<p>When <code>--model</code> is omitted, it uses a built-in example model:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>effibemviewer<span class="w"> </span>--output<span class="w"> </span>viewer.html
+</code></pre></div>
+<h4 id="Options">Options<a class="headerlink" href="#Options" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-m, --model PATH</code></td>
+<td>Path to OpenStudio model file (.osm)</td>
+</tr>
+<tr>
+<td><code>-o, --output PATH</code></td>
+<td>Output HTML file path (default: <code>viewer.html</code>)</td>
+</tr>
+<tr>
+<td><code>-g, --geometry-diagnostics</code></td>
+<td>Include geometry diagnostic controls</td>
+</tr>
+<tr>
+<td><code>--pretty</code></td>
+<td>Pretty-print JSON in the HTML output</td>
+</tr>
+</tbody>
+</table>
+<h4 id="Library-Mode-Options">Library Mode Options<a class="headerlink" href="#Library-Mode-Options" title="Permanent link">&para;</a></h4>
+<p>By default, the CLI generates a separate <code>effibemviewer.js</code> and <code>effibemviewer.css</code> file alongside the HTML. You can change this behavior:</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--embedded</code></td>
+<td>Inline JS/CSS directly in the HTML file</td>
+</tr>
+<tr>
+<td><code>--cdn</code></td>
+<td>Reference JS/CSS from jsDelivr CDN (no local files needed)</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>--embedded</code> and <code>--cdn</code> are mutually exclusive.</p>
+</div>
+<p><strong>Examples:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="gp"># </span>Generate<span class="w"> </span>with<span class="w"> </span>external<span class="w"> </span><span class="nb">local</span><span class="w"> </span>files<span class="w"> </span><span class="o">(</span>default<span class="o">)</span>
+<span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>effibemviewer<span class="w"> </span>-m<span class="w"> </span>model.osm<span class="w"> </span>-o<span class="w"> </span>viewer.html
+<span class="gp"># </span>Creates:<span class="w"> </span>viewer.html,<span class="w"> </span>effibemviewer.js,<span class="w"> </span>effibemviewer.css
+
+<span class="gp"># </span>Generate<span class="w"> </span>with<span class="w"> </span>embedded<span class="w"> </span>JS/CSS<span class="w"> </span><span class="o">(</span>single<span class="w"> </span>file,<span class="w"> </span>larger<span class="w"> </span>but<span class="w"> </span>portable<span class="o">)</span>
+<span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>effibemviewer<span class="w"> </span>-m<span class="w"> </span>model.osm<span class="w"> </span>-o<span class="w"> </span>viewer.html<span class="w"> </span>--embedded
+<span class="gp"># </span>Creates:<span class="w"> </span>viewer.html<span class="w"> </span><span class="o">(</span>self-contained<span class="o">)</span>
+
+<span class="gp"># </span>Generate<span class="w"> </span>with<span class="w"> </span>CDN<span class="w"> </span>references<span class="w"> </span><span class="o">(</span>smallest<span class="w"> </span>file,<span class="w"> </span>requires<span class="w"> </span>internet<span class="o">)</span>
+<span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>effibemviewer<span class="w"> </span>-m<span class="w"> </span>model.osm<span class="w"> </span>-o<span class="w"> </span>viewer.html<span class="w"> </span>--cdn
+<span class="gp"># </span>Creates:<span class="w"> </span>viewer.html<span class="w"> </span><span class="o">(</span>loads<span class="w"> </span>JS/CSS<span class="w"> </span>from<span class="w"> </span>cdn.jsdelivr.net<span class="o">)</span>
+</code></pre></div>
+<h4 id="Loader-Mode">Loader Mode<a class="headerlink" href="#Loader-Mode" title="Permanent link">&para;</a></h4>
+<p>Generate an HTML page with a file input for loading local GLTF files, instead of embedding model data:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>effibemviewer<span class="w"> </span>--loader<span class="w"> </span>--output<span class="w"> </span>loader.html
+</code></pre></div>
+<p>This is useful for creating a standalone viewer that users can use to load their own GLTF files. No OpenStudio installation is required for loader mode.</p>
+<div class="highlight"><pre><span></span><code><span class="gp"># </span>Loader<span class="w"> </span>with<span class="w"> </span>CDN<span class="w"> </span><span class="o">(</span>minimal<span class="w"> </span>deployment<span class="w"> </span>-<span class="w"> </span>just<span class="w"> </span>one<span class="w"> </span>HTML<span class="w"> </span>file<span class="o">)</span>
+<span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>effibemviewer<span class="w"> </span>--loader<span class="w"> </span>--cdn<span class="w"> </span>--output<span class="w"> </span>loader.html
+</code></pre></div>
 
 
 
@@ -898,6 +1030,8 @@
     
     
       <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../assets/_markdown_exec_pyodide.js"></script>
       
     
   </body>
