@@ -1,3 +1,8 @@
+/**
+ * EffiBEM Viewer - A Three.js-based viewer for OpenStudio GLTF models
+ * https://github.com/jmarrec/effibemviewer
+ * https://effibem.com
+ */
 html, body {
   height: 100%;
   margin: 0;

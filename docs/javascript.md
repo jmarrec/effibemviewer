@@ -10,7 +10,7 @@ The easiest way to use the viewer is via the jsDelivr CDN:
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jmarrec/effibemviewer@v0.2.1/public/cdn/effibemviewer.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jmarrec/effibemviewer@v0.2.2/public/cdn/effibemviewer.css">
 </head>
 <body>
   <div id="viewer" class="effibem-viewer">
@@ -25,7 +25,7 @@ The easiest way to use the viewer is via the jsDelivr CDN:
     }
   }
   </script>
-  <script type="module" src="https://cdn.jsdelivr.net/gh/jmarrec/effibemviewer@v0.2.1/public/cdn/effibemviewer.js"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/gh/jmarrec/effibemviewer@v0.2.2/public/cdn/effibemviewer.js"></script>
   <script type="module">
     // Load a GLTF file
     runFromFile('./model.gltf');
@@ -160,7 +160,7 @@ A complete example with file input for loading local GLTF files:
 <html>
 <head>
   <title>EffiBEM Viewer</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jmarrec/effibemviewer@v0.2.1/public/cdn/effibemviewer.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jmarrec/effibemviewer@v0.2.2/public/cdn/effibemviewer.css">
   <style>
     .loader { padding: 20px; text-align: center; }
     .loader.hidden { display: none; }
@@ -185,7 +185,7 @@ A complete example with file input for loading local GLTF files:
     }
   }
   </script>
-  <script type="module" src="https://cdn.jsdelivr.net/gh/jmarrec/effibemviewer@v0.2.1/public/cdn/effibemviewer.js"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/gh/jmarrec/effibemviewer@v0.2.2/public/cdn/effibemviewer.js"></script>
   <script type="module">
     const viewer = new EffiBEMViewer('viewer');
 
