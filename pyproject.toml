@@ -39,7 +39,11 @@ jinja2 = "^3.1"
 black = "^26.1"
 isort = "^7.0"
 pytest = "^9.0"
+pytest-cov = "^6.0"
 mypy = "^1.19"
+flake8 = "^7.0"
+flake8-pyproject = "^1.2"
+twine = "^6.0"
 bump2version = "^1.0.1"
 
 [tool.poetry.group.doc.dependencies]
@@ -79,6 +83,84 @@ ensure_newline_before_comments = true
 line_length = 120
 skip_gitignore = true
 
+[tool.flake8]
+max-line-length = 120
+extend-ignore = ["E402", "D100"]
+per-file-ignores = ["__init__.py:F401,D104"]
+docstring-convention = "google"
+exclude = [
+    ".git",
+    "__pycache__",
+    "setup.py",
+    "build",
+    "dist",
+    "docs",
+    "releases",
+    ".venv",
+    ".tox",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".vscode",
+    ".github",
+]
+
+[tool.mypy]
+ignore_missing_imports = true
+
+[tool.coverage.run]
+# omit =
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "def main",
+]
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.tox]
+env_list = ["py310", "py312", "format", "lint", "build"]
+
+[tool.tox.env_run_base]
+allowlist_externals = ["poetry"]
+pass_env = ["*"]
+set_env = {PYTHONPATH = "{tox_root}", PYTHONWARNINGS = "ignore"}
+commands_pre = [["poetry", "install", "--with", "dev"]]
+
+[tool.tox.env.py310]
+commands = [["poetry", "run", "pytest", "--cov=effibemviewer", "--cov-branch", "--cov-report=xml", "--cov-report=term-missing", "tests"]]
+
+[tool.tox.env.py312]
+commands = [["poetry", "run", "pytest", "--cov=effibemviewer", "--cov-branch", "--cov-report=xml", "--cov-report=term-missing", "tests"]]
+
+[tool.tox.env.format]
+commands = [
+    ["poetry", "run", "isort", "effibemviewer"],
+    ["poetry", "run", "black", "effibemviewer", "tests"]
+]
+
+[tool.tox.env.lint]
+commands = [
+    ["poetry", "run", "flake8", "effibemviewer", "tests"],
+    ["poetry", "run", "mypy", "effibemviewer", "tests"]
+]
+
+[tool.tox.env.build]
+commands_pre = [["poetry", "install", "--with", "dev,doc"]]
+commands = [
+    ["poetry", "build"],
+    ["poetry", "run", "mkdocs", "build"],
+    ["poetry", "run", "twine", "check", "dist/*"]
+]
+
+[tool.tox.gh-actions]
+python = {3.10 = ["py310"], 3.12 = ["py312", "format", "lint", "build"]}
