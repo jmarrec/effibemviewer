@@ -7,6 +7,7 @@ __version__ = '0.1.2'
 from effibemviewer.gltf import (
     create_example_model,
     display_model,
+    get_js_library,
     model_to_gltf_html,
     model_to_gltf_json,
     model_to_gltf_script,
@@ -15,6 +16,7 @@ from effibemviewer.gltf import (
 __all__ = [
     "create_example_model",
     "display_model",
+    "get_js_library",
     "model_to_gltf_html",
     "model_to_gltf_json",
     "model_to_gltf_script",

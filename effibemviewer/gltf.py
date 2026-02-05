@@ -34,11 +34,23 @@ def model_to_gltf_json(model: openstudio.model.Model, include_geometry_diagnosti
     return ft.modelToGLTFJSON(model)
 
 
+def get_js_library() -> str:
+    """Get the EffiBEMViewer JavaScript library content.
+
+    Returns:
+        str: The JavaScript library content (uses bare specifiers, requires importmap)
+    """
+    template = env.get_template("effibemviewer_lib.js.j2")
+    return template.render()
+
+
 def model_to_gltf_script(
     model: openstudio.model.Model,
     height: str = "500px",
     pretty_json: bool = False,
     include_geometry_diagnostics: bool = False,
+    embedded: bool = True,
+    js_lib_path: str = "./effibemviewer.js",
 ) -> str:
     """Generate HTML/JS fragment to render an OpenStudio model as GLTF.
 
@@ -47,16 +59,25 @@ def model_to_gltf_script(
         height: CSS height value (default "500px", use "100vh" for full viewport)
         pretty_json: If True, format JSON with indentation
         include_geometry_diagnostics: If True, include geometry diagnostic info
+        embedded: If True, inline the JS library. If False, reference external JS file.
+        js_lib_path: Path to external JS library (only used if embedded=False)
     """
     data = model_to_gltf_json(model=model, include_geometry_diagnostics=include_geometry_diagnostics)
 
     template = env.get_template("gltf_viewer.html.j2")
     indent = 2 if pretty_json else None
+
+    # For embedded mode, include JS library content inline
+    js_lib_content = get_js_library() if embedded else None
+
     return template.render(
         height=height,
         gltf_data=data,
         indent=indent,
         include_geometry_diagnostics=include_geometry_diagnostics,
+        embedded=embedded,
+        js_lib_content=js_lib_content,
+        js_lib_path=js_lib_path,
     )
 
 
@@ -65,10 +86,26 @@ def model_to_gltf_html(
     height: str = "100vh",
     pretty_json: bool = False,
     include_geometry_diagnostics: bool = False,
+    embedded: bool = True,
+    js_lib_path: str = "./effibemviewer.js",
 ) -> str:
-    """Generate a full standalone HTML page for viewing an OpenStudio model."""
+    """Generate a full standalone HTML page for viewing an OpenStudio model.
+
+    Args:
+        model: OpenStudio model to render
+        height: CSS height value (default "100vh" for full viewport)
+        pretty_json: If True, format JSON with indentation
+        include_geometry_diagnostics: If True, include geometry diagnostic info
+        embedded: If True, inline the JS library. If False, reference external JS file.
+        js_lib_path: Path to external JS library (only used if embedded=False)
+    """
     fragment = model_to_gltf_script(
-        model=model, height=height, pretty_json=pretty_json, include_geometry_diagnostics=include_geometry_diagnostics
+        model=model,
+        height=height,
+        pretty_json=pretty_json,
+        include_geometry_diagnostics=include_geometry_diagnostics,
+        embedded=embedded,
+        js_lib_path=js_lib_path,
     )
     return f"<!DOCTYPE html><html><head></head><body style='margin:0'>{fragment}</body></html>"
 
@@ -142,6 +179,7 @@ def create_example_model(include_geometry_diagnostics: bool = False) -> openstud
 
     if include_geometry_diagnostics:
         surface = next(s for s in space_clone.surfaces() if s.surfaceType() == "Wall")
-        surface.setVertices(openstudio.reverse(surface.vertices()))  # Make one surface incorrectly oriented
+        # Make one surface incorrectly oriented
+        surface.setVertices(openstudio.reverse(surface.vertices()))
 
     return model

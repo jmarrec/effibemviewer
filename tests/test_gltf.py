@@ -1,17 +1,11 @@
 #!/usr/bin/env python
 """Tests for `effibemviewer` gltf."""
 
-import sys
-from pathlib import Path
-
-# TODO: Remove once geometry diagnostics is in released OpenStudio
-sys.path.insert(0, str(Path("~/Software/Others/OS-build-release/Products/python").expanduser()))
-
 import openstudio
 import pytest
 
 from effibemviewer import create_example_model
-from effibemviewer.gltf import model_to_gltf_html, model_to_gltf_script
+from effibemviewer.gltf import get_js_library, model_to_gltf_html, model_to_gltf_script
 
 
 @pytest.fixture
@@ -57,10 +51,14 @@ class TestJSAPI:
         assert "diagnostics-section" in html_no_diag  # HTML always present
         assert "includeGeometryDiagnostics: false" in html_no_diag
 
-        # With diagnostics enabled
-        html_with_diag = model_to_gltf_html(model, include_geometry_diagnostics=True)
-        assert "diagnostics-section" in html_with_diag
-        assert "includeGeometryDiagnostics: true" in html_with_diag
+        # With diagnostics enabled (skip if not supported by OpenStudio version)
+        has_diag_support = callable(
+            getattr(openstudio.gltf.GltfForwardTranslator, "setIncludeGeometryDiagnostics", None)
+        )
+        if has_diag_support:
+            html_with_diag = model_to_gltf_html(model, include_geometry_diagnostics=True)
+            assert "diagnostics-section" in html_with_diag
+            assert "includeGeometryDiagnostics: true" in html_with_diag
 
     def test_script_fragment_also_has_api(self, model):
         """Test that the script fragment (not full HTML) also exposes the API."""
@@ -75,3 +73,41 @@ class TestJSAPI:
         assert "loadFromFileObject(file)" in html
         assert "window.runFromFileObject" in html
         assert "FileReader" in html
+
+
+class TestEmbeddedVsExternal:
+    """Tests for embedded vs external JS library modes."""
+
+    def test_embedded_mode_has_importmap(self, model):
+        """Test that embedded mode includes importmap and inline JS."""
+        html = model_to_gltf_html(model, embedded=True)
+        assert '<script type="importmap">' in html
+        assert 'import * as THREE from "three"' in html
+        assert "class EffiBEMViewer" in html
+
+    def test_external_mode_references_js_file(self, model):
+        """Test that external mode references the external JS file."""
+        html = model_to_gltf_html(model, embedded=False, js_lib_path="./effibemviewer.js")
+        assert '<script type="module" src="./effibemviewer.js">' in html
+        assert "class EffiBEMViewer" not in html  # Class should not be inline
+
+    def test_external_mode_custom_js_path(self, model):
+        """Test that external mode uses custom JS library path."""
+        html = model_to_gltf_html(model, embedded=False, js_lib_path="./js/viewer.js")
+        assert '<script type="module" src="./js/viewer.js">' in html
+
+    def test_importmap_always_present(self, model):
+        """Test that importmap is present in both embedded and external modes."""
+        html_embedded = model_to_gltf_html(model, embedded=True)
+        html_external = model_to_gltf_html(model, embedded=False)
+        for html in [html_embedded, html_external]:
+            assert '<script type="importmap">' in html
+            assert '"three": "https://unpkg.com/three@' in html
+
+    def test_get_js_library(self):
+        """Test that get_js_library produces JS with bare specifiers (requires importmap)."""
+        js = get_js_library()
+        assert 'import * as THREE from "three"' in js
+        assert 'import { GLTFLoader } from "three/addons/' in js
+        assert "class EffiBEMViewer" in js
+        assert "export { EffiBEMViewer }" in js
