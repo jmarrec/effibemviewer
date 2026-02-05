@@ -8,8 +8,8 @@
 </script>
 
 <style>
-  #viewer { width: 100%; height: {{ height }}; position: relative; }
-  #controls {
+  .effibem-viewer { width: 100%; height: {{ height }}; position: relative; }
+  .effibem-viewer .controls {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -20,9 +20,9 @@
     font-size: 12px;
     z-index: 100;
   }
-  #controls label { display: block; margin: 4px 0; cursor: pointer; }
-  #controls input { margin-right: 6px; }
-  #info-panel {
+  .effibem-viewer .controls label { display: block; margin: 4px 0; cursor: pointer; }
+  .effibem-viewer .controls input { margin-right: 6px; }
+  .effibem-viewer .info-panel {
     display: none;
     position: absolute;
     background: rgba(255,255,255,0.95);
@@ -35,12 +35,12 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     pointer-events: none;
   }
-  #info-panel h4 { margin: 0 0 8px 0; font-size: 13px; }
-  #info-panel .info-row { margin: 4px 0; }
-  #info-panel .info-row.emphasized { background: #1a73e8; color: white; margin: 4px -8px; padding: 4px 8px; border-radius: 4px; font-weight: 600; }
-  #info-panel .info-row.emphasized .info-label { color: white; }
-  #info-panel .info-label { color: #666; }
-  .badge {
+  .effibem-viewer .info-panel h4 { margin: 0 0 8px 0; font-size: 13px; }
+  .effibem-viewer .info-panel .info-row { margin: 4px 0; }
+  .effibem-viewer .info-panel .info-row.emphasized { background: #1a73e8; color: white; margin: 4px -8px; padding: 4px 8px; border-radius: 4px; font-weight: 600; }
+  .effibem-viewer .info-panel .info-row.emphasized .info-label { color: white; }
+  .effibem-viewer .info-panel .info-label { color: #666; }
+  .effibem-viewer .badge {
     display: inline-block;
     padding: 2px 8px;
     font-size: 11px;
@@ -48,15 +48,17 @@
     border-radius: 10px;
     text-transform: capitalize;
   }
-  .badge-success { background-color: #198754; color: white; }
-  .badge-danger { background-color: #dc3545; color: white; }
+  .effibem-viewer .badge-success { background-color: #198754; color: white; }
+  .effibem-viewer .badge-danger { background-color: #dc3545; color: white; }
+  .effibem-viewer .diagnostics-section { display: none; }
+  .effibem-viewer.include-diagnostics .diagnostics-section { display: block; }
 </style>
 
-<div id="viewer">
-  <div id="controls">
+<div id="viewer" class="effibem-viewer">
+  <div class="controls">
     <div style="margin-bottom: 8px;">
       <label style="display: inline;"><strong>Render By</strong></label>
-      <select id="renderBy" style="margin-left: 8px; font-size: 12px;">
+      <select class="renderBy" style="margin-left: 8px; font-size: 12px;">
         <option value="surfaceType">Surface Type</option>
         <option value="boundary">Boundary</option>
         <option value="construction">Construction</option>
@@ -67,48 +69,48 @@
     </div>
     <div style="margin: 8px 0;">
       <label style="display: inline;"><strong>Show Story</strong></label>
-      <select id="showStory" style="margin-left: 8px; font-size: 12px;">
+      <select class="showStory" style="margin-left: 8px; font-size: 12px;">
         <option value="">All Stories</option>
       </select>
     </div>
     <hr style="margin: 8px 0; border: none; border-top: 1px solid #ccc;">
     <strong>Surface Filters</strong>
-    <label><input type="checkbox" id="showFloors" checked> Floors</label>
-    <label><input type="checkbox" id="showWalls" checked> Walls</label>
-    <label><input type="checkbox" id="showRoofs" checked> Roofs/Ceilings</label>
-    <label><input type="checkbox" id="showWindows" checked> Windows</label>
-    <label><input type="checkbox" id="showDoors" checked> Doors</label>
-    <label><input type="checkbox" id="showShading" checked> Shading</label>
-    <label><input type="checkbox" id="showPartitions" checked> Partitions</label>
+    <label><input type="checkbox" class="showFloors" checked> Floors</label>
+    <label><input type="checkbox" class="showWalls" checked> Walls</label>
+    <label><input type="checkbox" class="showRoofs" checked> Roofs/Ceilings</label>
+    <label><input type="checkbox" class="showWindows" checked> Windows</label>
+    <label><input type="checkbox" class="showDoors" checked> Doors</label>
+    <label><input type="checkbox" class="showShading" checked> Shading</label>
+    <label><input type="checkbox" class="showPartitions" checked> Partitions</label>
     <hr style="margin: 8px 0; border: none; border-top: 1px solid #ccc;">
-    <label><input type="checkbox" id="showEdges" checked> Show Edges</label>
-{% if include_geometry_diagnostics %}
-    <hr style="margin: 8px 0; border: none; border-top: 1px solid #ccc;">
-    <strong>Geometry Diagnostics</strong>
-    <label><input type="checkbox" id="showOnlyNonConvexSurfaces"> Non-Convex Surfaces Only</label>
-    <label><input type="checkbox" id="showOnlyIncorrectlyOriented"> Incorrectly Oriented Only</label>
-    <label><input type="checkbox" id="showOnlyNonConvexSpaces"> Non-Convex Spaces Only</label>
-    <label><input type="checkbox" id="showOnlyNonEnclosedSpaces"> Non-Enclosed Spaces Only</label>
-{% endif %}
+    <label><input type="checkbox" class="showEdges" checked> Show Edges</label>
+    <div class="diagnostics-section">
+      <hr style="margin: 8px 0; border: none; border-top: 1px solid #ccc;">
+      <strong>Geometry Diagnostics</strong>
+      <label><input type="checkbox" class="showOnlyNonConvexSurfaces"> Non-Convex Surfaces Only</label>
+      <label><input type="checkbox" class="showOnlyIncorrectlyOriented"> Incorrectly Oriented Only</label>
+      <label><input type="checkbox" class="showOnlyNonConvexSpaces"> Non-Convex Spaces Only</label>
+      <label><input type="checkbox" class="showOnlyNonEnclosedSpaces"> Non-Enclosed Spaces Only</label>
+    </div>
   </div>
-  <div id="info-panel">
-    <h4 id="info-name"></h4>
-    <div class="info-row" id="info-type-row"><span class="info-label">Surface Type:</span> <span id="info-type"></span></div>
-    <div class="info-row" id="info-space-row"><span class="info-label">Space:</span> <span id="info-space"></span></div>
-    <div class="info-row" id="info-spaceType-row"><span class="info-label">Space Type:</span> <span id="info-spaceType"></span></div>
-    <div class="info-row" id="info-thermalZone-row"><span class="info-label">Thermal Zone:</span> <span id="info-thermalZone"></span></div>
-    <div class="info-row" id="info-buildingStory-row"><span class="info-label">Building Story:</span> <span id="info-buildingStory"></span></div>
-    <div class="info-row" id="info-construction-row"><span class="info-label">Construction:</span> <span id="info-construction"></span></div>
-    <div class="info-row" id="info-boundary-row"><span class="info-label">Boundary:</span> <span id="info-boundary"></span></div>
-    <div class="info-row" id="info-boundaryObject-row"><span class="info-label">Adjacent To:</span> <span id="info-boundaryObject"></span></div>
-    <div class="info-row" id="info-sunExposure-row"><span class="info-label">Sun Exposure:</span> <span id="info-sunExposure"></span></div>
-    <div class="info-row" id="info-windExposure-row"><span class="info-label">Wind Exposure:</span> <span id="info-windExposure"></span></div>
-{% if include_geometry_diagnostics %}
-    <div class="info-row" id="info-convex-row"><span class="info-label">Convex:</span> <span id="info-convex"></span></div>
-    <div class="info-row" id="info-correctlyOriented-row"><span class="info-label">Correctly Oriented:</span> <span id="info-correctlyOriented"></span></div>
-    <div class="info-row" id="info-spaceConvex-row"><span class="info-label">Space Convex:</span> <span id="info-spaceConvex"></span></div>
-    <div class="info-row" id="info-spaceEnclosed-row"><span class="info-label">Space Enclosed:</span> <span id="info-spaceEnclosed"></span></div>
-{% endif %}
+  <div class="info-panel">
+    <h4 class="info-name"></h4>
+    <div class="info-row info-type-row"><span class="info-label">Surface Type:</span> <span class="info-type"></span></div>
+    <div class="info-row info-space-row"><span class="info-label">Space:</span> <span class="info-space"></span></div>
+    <div class="info-row info-spaceType-row"><span class="info-label">Space Type:</span> <span class="info-spaceType"></span></div>
+    <div class="info-row info-thermalZone-row"><span class="info-label">Thermal Zone:</span> <span class="info-thermalZone"></span></div>
+    <div class="info-row info-buildingStory-row"><span class="info-label">Building Story:</span> <span class="info-buildingStory"></span></div>
+    <div class="info-row info-construction-row"><span class="info-label">Construction:</span> <span class="info-construction"></span></div>
+    <div class="info-row info-boundary-row"><span class="info-label">Boundary:</span> <span class="info-boundary"></span></div>
+    <div class="info-row info-boundaryObject-row"><span class="info-label">Adjacent To:</span> <span class="info-boundaryObject"></span></div>
+    <div class="info-row info-sunExposure-row"><span class="info-label">Sun Exposure:</span> <span class="info-sunExposure"></span></div>
+    <div class="info-row info-windExposure-row"><span class="info-label">Wind Exposure:</span> <span class="info-windExposure"></span></div>
+    <div class="diagnostics-section">
+      <div class="info-row info-convex-row"><span class="info-label">Convex:</span> <span class="info-convex"></span></div>
+      <div class="info-row info-correctlyOriented-row"><span class="info-label">Correctly Oriented:</span> <span class="info-correctlyOriented"></span></div>
+      <div class="info-row info-spaceConvex-row"><span class="info-label">Space Convex:</span> <span class="info-spaceConvex"></span></div>
+      <div class="info-row info-spaceEnclosed-row"><span class="info-label">Space Enclosed:</span> <span class="info-spaceEnclosed"></span></div>
+    </div>
   </div>
 </div>
 
@@ -117,87 +119,183 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
-const container = document.getElementById("viewer");
+/**
+ * EffiBEMViewer - A viewer for OpenStudio GLTF models
+ */
+class EffiBEMViewer {
+  constructor(container, options = {}) {
+    this.container = typeof container === 'string' ? document.getElementById(container) : container;
+    this.options = {
+      includeGeometryDiagnostics: options.includeGeometryDiagnostics || false,
+    };
 
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xf5f5f5);
+    // Toggle diagnostics visibility via CSS class
+    if (this.options.includeGeometryDiagnostics) {
+      this.container.classList.add('include-diagnostics');
+    }
 
-const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 5000);
+    // Internal state
+    this.sceneObjects = [];
+    this.objectEdges = new Map();
+    this.backObjects = new Map();
+    this.backToFront = new Map();
+    this.selectedObject = null;
+    this.originalMaterial = null;
+    this.selectedBackWasVisible = false;
+    this.renderRequested = false;
+    this.mouseDownPos = { x: 0, y: 0 };
 
-const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(container.clientWidth, container.clientHeight);
-renderer.outputColorSpace = THREE.SRGBColorSpace;
-container.appendChild(renderer.domElement);
+    // Get DOM elements
+    this.infoPanel = this.container.querySelector('.info-panel');
 
-const controls = new OrbitControls(camera, renderer.domElement);
+    this._initScene();
+    this._initControls();
+    this._initEventListeners();
+  }
 
-window.addEventListener('resize', () => {
-  camera.aspect = container.clientWidth / container.clientHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(container.clientWidth, container.clientHeight);
-  requestRenderIfNotRequested();
-});
+  _initScene() {
+    this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color(0xf5f5f5);
 
-scene.add(new THREE.AmbientLight(0x888888));
-scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 0.6));
-const dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
-dirLight.position.set(1, 2, 1);
-scene.add(dirLight);
+    this.camera = new THREE.PerspectiveCamera(45, this.container.clientWidth / this.container.clientHeight, 0.1, 5000);
 
-// Collect all meshes for filtering and selection
-const sceneObjects = [];
-// Map mesh -> edge lines
-const objectEdges = new Map();
-// Map mesh -> back face object
-const backObjects = new Map();
-// Map back object -> front object (for selection)
-const backToFront = new Map();
+    this.renderer = new THREE.WebGLRenderer({ antialias: true });
+    this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
+    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+    this.container.appendChild(this.renderer.domElement);
 
-// Selection state
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
-let selectedObject = null;
-let originalMaterial = null;
+    this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
 
-const selectedMaterial = new THREE.MeshStandardMaterial({
-  color: 0xffff00,
-  emissive: 0x444400,
-  side: THREE.DoubleSide
-});
+    // Lighting
+    this.scene.add(new THREE.AmbientLight(0x888888));
+    this.scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 0.6));
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
+    dirLight.position.set(1, 2, 1);
+    this.scene.add(dirLight);
 
-const infoPanel = document.getElementById('info-panel');
+    // Selection material
+    this.selectedMaterial = new THREE.MeshStandardMaterial({
+      color: 0xffff00,
+      emissive: 0x444400,
+      side: THREE.DoubleSide
+    });
+  }
 
-let selectedBackWasVisible = false;
+  _initControls() {
+    const $ = (sel) => this.container.querySelector(sel);
 
-function selectObject(obj, clickX, clickY) {
-  // Restore previous selection
-  if (selectedObject && originalMaterial) {
-    selectedObject.material = originalMaterial;
-    // Restore back object visibility
-    const prevBackObj = backObjects.get(selectedObject);
-    if (prevBackObj) {
-      prevBackObj.visible = selectedBackWasVisible;
+    // Surface filter checkboxes
+    ['showFloors', 'showWalls', 'showRoofs', 'showWindows', 'showDoors', 'showShading', 'showPartitions', 'showEdges'].forEach(cls => {
+      $(`.${cls}`)?.addEventListener('change', () => this._updateVisibility());
+    });
+
+    // Story dropdown
+    $('.showStory')?.addEventListener('change', () => this._updateVisibility());
+
+    // Render mode dropdown
+    $('.renderBy')?.addEventListener('change', () => this._updateRenderMode());
+
+    // Diagnostic filters
+    if (this.options.includeGeometryDiagnostics) {
+      ['showOnlyNonConvexSurfaces', 'showOnlyIncorrectlyOriented', 'showOnlyNonConvexSpaces', 'showOnlyNonEnclosedSpaces'].forEach(cls => {
+        $(`.${cls}`)?.addEventListener('change', () => this._updateVisibility());
+      });
     }
   }
 
-  if (obj) {
-    selectedObject = obj;
-    originalMaterial = obj.material;
-    obj.material = selectedMaterial;
+  _initEventListeners() {
+    // Window resize
+    window.addEventListener('resize', () => {
+      this.camera.aspect = this.container.clientWidth / this.container.clientHeight;
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
+      this._requestRender();
+    });
 
-    // Hide back object so yellow selection shows through
-    const backObj = backObjects.get(obj);
-    if (backObj) {
-      selectedBackWasVisible = backObj.visible;
-      backObj.visible = false;
+    // Orbit controls change
+    this.orbitControls.addEventListener('change', () => this._requestRender());
+
+    // Mouse events for selection
+    this.renderer.domElement.addEventListener('mousedown', (e) => {
+      this.mouseDownPos.x = e.clientX;
+      this.mouseDownPos.y = e.clientY;
+    });
+
+    this.renderer.domElement.addEventListener('click', (e) => this._onClick(e));
+  }
+
+  _onClick(event) {
+    // Ignore if this was a drag (camera orbit)
+    const dx = event.clientX - this.mouseDownPos.x;
+    const dy = event.clientY - this.mouseDownPos.y;
+    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) return;
+
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    const mouse = new THREE.Vector2(
+      ((event.clientX - rect.left) / rect.width) * 2 - 1,
+      -((event.clientY - rect.top) / rect.height) * 2 + 1
+    );
+
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(mouse, this.camera);
+
+    // Include both front and back objects for picking
+    const visibleObjects = this.sceneObjects.filter(obj => obj.visible);
+    const visibleBackObjects = [...this.backObjects.values()].filter(obj => obj.visible);
+    const allPickable = [...visibleObjects, ...visibleBackObjects];
+
+    const intersects = raycaster.intersectObjects(allPickable);
+
+    if (intersects.length > 0) {
+      let hitObj = intersects[0].object;
+      // If we hit a back object, resolve to its front object
+      if (this.backToFront.has(hitObj)) {
+        hitObj = this.backToFront.get(hitObj);
+      }
+      this._selectObject(hitObj, event.clientX, event.clientY);
+    } else {
+      this._selectObject(null);
     }
 
-    // Update info panel with all available details
-    const data = obj.userData;
-    const renderMode = document.getElementById('renderBy').value;
-    document.getElementById('info-name').textContent = data.name || 'Unknown';
+    this._requestRender();
+  }
 
-    // Map renderBy values to info row IDs
+  _selectObject(obj, clickX, clickY) {
+    // Restore previous selection
+    if (this.selectedObject && this.originalMaterial) {
+      this.selectedObject.material = this.originalMaterial;
+      const prevBackObj = this.backObjects.get(this.selectedObject);
+      if (prevBackObj) {
+        prevBackObj.visible = this.selectedBackWasVisible;
+      }
+    }
+
+    if (obj) {
+      this.selectedObject = obj;
+      this.originalMaterial = obj.material;
+      obj.material = this.selectedMaterial;
+
+      const backObj = this.backObjects.get(obj);
+      if (backObj) {
+        this.selectedBackWasVisible = backObj.visible;
+        backObj.visible = false;
+      }
+
+      this._updateInfoPanel(obj, clickX, clickY);
+    } else {
+      this.selectedObject = null;
+      this.originalMaterial = null;
+      this.infoPanel.style.display = 'none';
+    }
+  }
+
+  _updateInfoPanel(obj, clickX, clickY) {
+    const $ = (sel) => this.container.querySelector(sel);
+    const data = obj.userData;
+    const renderMode = $('.renderBy').value;
+
+    $('.info-name').textContent = data.name || 'Unknown';
+
     const renderByToRowId = {
       'surfaceType': 'type',
       'boundary': 'boundary',
@@ -208,10 +306,9 @@ function selectObject(obj, clickX, clickY) {
     };
     const emphasizedRowId = renderByToRowId[renderMode];
 
-    // Helper to show/hide rows with emphasis
     const setRow = (id, value) => {
-      const row = document.getElementById(`info-${id}-row`);
-      const span = document.getElementById(`info-${id}`);
+      const row = $(`.info-${id}-row`);
+      const span = $(`.info-${id}`);
       if (value) {
         span.textContent = value;
         row.style.display = 'block';
@@ -233,299 +330,223 @@ function selectObject(obj, clickX, clickY) {
     setRow('sunExposure', data.sunExposure);
     setRow('windExposure', data.windExposure);
 
-{% if include_geometry_diagnostics %}
-    // Diagnostic fields with pill badge styling
-    const setDiagRow = (id, value) => {
-      const row = document.getElementById(`info-${id}-row`);
-      const span = document.getElementById(`info-${id}`);
-      if (row && value !== undefined) {
-        span.innerHTML = `<span class="badge ${value ? 'badge-success' : 'badge-danger'}">${value}</span>`;
-        row.style.display = 'block';
-      } else if (row) {
-        row.style.display = 'none';
-      }
-    };
+    if (this.options.includeGeometryDiagnostics) {
+      const setDiagRow = (id, value) => {
+        const row = $(`.info-${id}-row`);
+        const span = $(`.info-${id}`);
+        if (row && value !== undefined) {
+          span.innerHTML = `<span class="badge ${value ? 'badge-success' : 'badge-danger'}">${value}</span>`;
+          row.style.display = 'block';
+        } else if (row) {
+          row.style.display = 'none';
+        }
+      };
 
-    setDiagRow('convex', data.convex);
-    setDiagRow('correctlyOriented', data.correctlyOriented);
-    setDiagRow('spaceConvex', data.spaceConvex);
-    setDiagRow('spaceEnclosed', data.spaceEnclosed);
-{% endif %}
+      setDiagRow('convex', data.convex);
+      setDiagRow('correctlyOriented', data.correctlyOriented);
+      setDiagRow('spaceConvex', data.spaceConvex);
+      setDiagRow('spaceEnclosed', data.spaceEnclosed);
+    }
 
-    // Position panel to the right of click, with offset
-    const rect = container.getBoundingClientRect();
+    // Position panel
+    const rect = this.container.getBoundingClientRect();
     let left = clickX - rect.left + 15;
     let top = clickY - rect.top - 10;
 
-    // Keep panel within container bounds
-    infoPanel.style.display = 'block';
-    const panelRect = infoPanel.getBoundingClientRect();
-    if (left + panelRect.width > container.clientWidth) {
+    this.infoPanel.style.display = 'block';
+    const panelRect = this.infoPanel.getBoundingClientRect();
+    if (left + panelRect.width > this.container.clientWidth) {
       left = clickX - rect.left - panelRect.width - 15;
     }
-    if (top + panelRect.height > container.clientHeight) {
-      top = container.clientHeight - panelRect.height - 10;
+    if (top + panelRect.height > this.container.clientHeight) {
+      top = this.container.clientHeight - panelRect.height - 10;
     }
     if (top < 10) top = 10;
 
-    infoPanel.style.left = left + 'px';
-    infoPanel.style.top = top + 'px';
-  } else {
-    selectedObject = null;
-    originalMaterial = null;
-    infoPanel.style.display = 'none';
-  }
-}
-
-// Track mouse position for click vs drag detection
-let mouseDownPos = { x: 0, y: 0 };
-
-renderer.domElement.addEventListener('mousedown', (event) => {
-  mouseDownPos.x = event.clientX;
-  mouseDownPos.y = event.clientY;
-});
-
-renderer.domElement.addEventListener('click', (event) => {
-  // Ignore if this was a drag (camera orbit)
-  const dx = event.clientX - mouseDownPos.x;
-  const dy = event.clientY - mouseDownPos.y;
-  if (Math.abs(dx) > 5 || Math.abs(dy) > 5) return;
-
-  const rect = renderer.domElement.getBoundingClientRect();
-  mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-  mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
-  raycaster.setFromCamera(mouse, camera);
-
-  // Include both front and back objects for picking
-  const visibleObjects = sceneObjects.filter(obj => obj.visible);
-  const visibleBackObjects = [...backObjects.values()].filter(obj => obj.visible);
-  const allPickable = [...visibleObjects, ...visibleBackObjects];
-
-  const intersects = raycaster.intersectObjects(allPickable);
-
-  if (intersects.length > 0) {
-    let hitObj = intersects[0].object;
-    // If we hit a back object, resolve to its front object
-    if (backToFront.has(hitObj)) {
-      hitObj = backToFront.get(hitObj);
-    }
-    selectObject(hitObj, event.clientX, event.clientY);
-  } else {
-    selectObject(null);
+    this.infoPanel.style.left = left + 'px';
+    this.infoPanel.style.top = top + 'px';
   }
 
-  requestRenderIfNotRequested();
-});
+  _updateVisibility() {
+    const $ = (sel) => this.container.querySelector(sel);
+    const showFloors = $('.showFloors')?.checked ?? true;
+    const showWalls = $('.showWalls')?.checked ?? true;
+    const showRoofs = $('.showRoofs')?.checked ?? true;
+    const showWindows = $('.showWindows')?.checked ?? true;
+    const showDoors = $('.showDoors')?.checked ?? true;
+    const showShading = $('.showShading')?.checked ?? true;
+    const showPartitions = $('.showPartitions')?.checked ?? true;
+    const showEdges = $('.showEdges')?.checked ?? true;
+    const showStory = $('.showStory')?.value || '';
 
-function updateVisibility() {
-  const showFloors = document.getElementById('showFloors').checked;
-  const showWalls = document.getElementById('showWalls').checked;
-  const showRoofs = document.getElementById('showRoofs').checked;
-  const showWindows = document.getElementById('showWindows').checked;
-  const showDoors = document.getElementById('showDoors').checked;
-  const showShading = document.getElementById('showShading').checked;
-  const showPartitions = document.getElementById('showPartitions').checked;
-  const showEdges = document.getElementById('showEdges').checked;
-  const showStory = document.getElementById('showStory').value;
+    const showOnlyNonConvexSurfaces = this.options.includeGeometryDiagnostics && $('.showOnlyNonConvexSurfaces')?.checked;
+    const showOnlyIncorrectlyOriented = this.options.includeGeometryDiagnostics && $('.showOnlyIncorrectlyOriented')?.checked;
+    const showOnlyNonConvexSpaces = this.options.includeGeometryDiagnostics && $('.showOnlyNonConvexSpaces')?.checked;
+    const showOnlyNonEnclosedSpaces = this.options.includeGeometryDiagnostics && $('.showOnlyNonEnclosedSpaces')?.checked;
 
-  sceneObjects.forEach(obj => {
-    const surfaceType = obj.userData?.surfaceType || '';
-    const storyName = obj.userData?.buildingStoryName || '';
-    let visible = true;
+    this.sceneObjects.forEach(obj => {
+      const surfaceType = obj.userData?.surfaceType || '';
+      const storyName = obj.userData?.buildingStoryName || '';
+      let visible = true;
 
-    // Filter by surface type
-    if (surfaceType === 'Floor') visible = showFloors;
-    else if (surfaceType === 'Wall') visible = showWalls;
-    else if (surfaceType === 'RoofCeiling') visible = showRoofs;
-    else if (surfaceType.includes('Window') || surfaceType.includes('Skylight') || surfaceType.includes('TubularDaylight') || surfaceType === 'GlassDoor') visible = showWindows;
-    else if (surfaceType.includes('Door')) visible = showDoors;
-    else if (surfaceType.includes('Shading')) visible = showShading;
-    else if (surfaceType === 'InteriorPartitionSurface') visible = showPartitions;
+      // Filter by surface type
+      if (surfaceType === 'Floor') visible = showFloors;
+      else if (surfaceType === 'Wall') visible = showWalls;
+      else if (surfaceType === 'RoofCeiling') visible = showRoofs;
+      else if (surfaceType.includes('Window') || surfaceType.includes('Skylight') || surfaceType.includes('TubularDaylight') || surfaceType === 'GlassDoor') visible = showWindows;
+      else if (surfaceType.includes('Door')) visible = showDoors;
+      else if (surfaceType.includes('Shading')) visible = showShading;
+      else if (surfaceType === 'InteriorPartitionSurface') visible = showPartitions;
 
-    // Filter by story
-    if (visible && showStory && storyName !== showStory) {
-      visible = false;
-    }
-
-{% if include_geometry_diagnostics %}
-    // Geometry diagnostic filters
-    const showOnlyNonConvexSurfaces = document.getElementById('showOnlyNonConvexSurfaces').checked;
-    const showOnlyIncorrectlyOriented = document.getElementById('showOnlyIncorrectlyOriented').checked;
-    const showOnlyNonConvexSpaces = document.getElementById('showOnlyNonConvexSpaces').checked;
-    const showOnlyNonEnclosedSpaces = document.getElementById('showOnlyNonEnclosedSpaces').checked;
-
-    if (visible && showOnlyNonConvexSurfaces && obj.userData.convex !== false) {
-      visible = false;
-    }
-    if (visible && showOnlyIncorrectlyOriented && obj.userData.correctlyOriented !== false) {
-      visible = false;
-    }
-    if (visible && showOnlyNonConvexSpaces && obj.userData.spaceConvex !== false) {
-      visible = false;
-    }
-    if (visible && showOnlyNonEnclosedSpaces && obj.userData.spaceEnclosed !== false) {
-      visible = false;
-    }
-{% endif %}
-
-    obj.visible = visible;
-
-    // Sync edge visibility
-    const edges = objectEdges.get(obj);
-    if (edges) {
-      edges.visible = visible && showEdges;
-    }
-
-    // Sync back object visibility
-    const backObj = backObjects.get(obj);
-    if (backObj) {
-      backObj.visible = visible;
-    }
-  });
-
-  requestRenderIfNotRequested();
-}
-
-// Add event listeners to checkboxes and dropdowns
-['showFloors', 'showWalls', 'showRoofs', 'showWindows', 'showDoors', 'showShading', 'showPartitions', 'showEdges'].forEach(id => {
-  document.getElementById(id).addEventListener('change', updateVisibility);
-});
-document.getElementById('showStory').addEventListener('change', updateVisibility);
-{% if include_geometry_diagnostics %}
-['showOnlyNonConvexSurfaces', 'showOnlyIncorrectlyOriented', 'showOnlyNonConvexSpaces', 'showOnlyNonEnclosedSpaces'].forEach(id => {
-  document.getElementById(id).addEventListener('change', updateVisibility);
-});
-{% endif %}
-
-// Color definitions for render modes
-const surfaceTypeColors = {
-  'Floor': 0x808080, 'Wall': 0xccb266, 'RoofCeiling': 0x994c4c,
-  'Window': 0x66b2cc, 'GlassDoor': 0x66b2cc, 'Skylight': 0x66b2cc,
-  'TubularDaylightDome': 0x66b2cc, 'TubularDaylightDiffuser': 0x66b2cc,
-  'Door': 0x99854c, 'OverheadDoor': 0x99854c,
-  'SiteShading': 0x4b7c95, 'BuildingShading': 0x714c99, 'SpaceShading': 0x4c6eb2,
-  'InteriorPartitionSurface': 0x9ebc8f, 'AirWall': 0x66b2cc,
-};
-const surfaceTypeColorsInt = {
-  'Floor': 0xbfbfbf, 'Wall': 0xebe2c5, 'RoofCeiling': 0xca9595,
-  'Window': 0xc0e2eb, 'GlassDoor': 0xc0e2eb, 'Skylight': 0xc0e2eb,
-  'TubularDaylightDome': 0xc0e2eb, 'TubularDaylightDiffuser': 0xc0e2eb,
-  'Door': 0xcabc95, 'OverheadDoor': 0xcabc95,
-  'SiteShading': 0xbbd1dc, 'BuildingShading': 0xd8cbe5, 'SpaceShading': 0xb7c5e0,
-  'InteriorPartitionSurface': 0xd5e2cf, 'AirWall': 0xc0e2eb,
-};
-const boundaryColors = {
-  'Surface': 0x009900, 'Adiabatic': 0xff0000, 'Space': 0xff0000,
-  'Outdoors': 0xa3cccc, 'Outdoors_Sun': 0x28cccc, 'Outdoors_Wind': 0x099fa2, 'Outdoors_SunWind': 0x4477a1,
-  'Ground': 0xccb77a, 'Foundation': 0x751e7a,
-  'OtherSideCoefficients': 0x3f3f3f, 'OtherSideConditionsModel': 0x99004c,
-};
-
-// Generate consistent color from string (for dynamic values like thermal zones)
-function stringToColor(str) {
-  if (!str) return 0xcccccc;
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  // Generate HSL with good saturation and lightness
-  const h = Math.abs(hash) % 360;
-  return new THREE.Color(`hsl(${h}, 65%, 55%)`).getHex();
-}
-
-// Cache for dynamic colors
-const dynamicColors = {};
-function getDynamicColor(category, name) {
-  const key = `${category}_${name}`;
-  if (!dynamicColors[key]) {
-    dynamicColors[key] = stringToColor(name);
-  }
-  return dynamicColors[key];
-}
-
-function getColorsForObject(obj, renderMode) {
-  const data = obj.userData;
-  let colorExt, colorInt;
-
-  switch (renderMode) {
-    case 'surfaceType':
-      colorExt = surfaceTypeColors[data.surfaceType] ?? 0xcccccc;
-      colorInt = surfaceTypeColorsInt[data.surfaceType] ?? 0xeeeeee;
-      break;
-    case 'boundary':
-      const bc = data.outsideBoundaryCondition || 'Outdoors';
-      // Combine sun/wind exposure for outdoor surfaces
-      let boundaryKey = bc;
-      if (bc === 'Outdoors') {
-        const sun = data.sunExposure === 'SunExposed';
-        const wind = data.windExposure === 'WindExposed';
-        if (sun && wind) boundaryKey = 'Outdoors_SunWind';
-        else if (sun) boundaryKey = 'Outdoors_Sun';
-        else if (wind) boundaryKey = 'Outdoors_Wind';
+      // Filter by story
+      if (visible && showStory && storyName !== showStory) {
+        visible = false;
       }
-      colorExt = boundaryColors[boundaryKey] ?? boundaryColors[bc] ?? 0xcccccc;
-      colorInt = colorExt;
-      break;
-    case 'construction':
-      colorExt = getDynamicColor('construction', data.constructionName);
-      colorInt = colorExt;
-      break;
-    case 'thermalZone':
-      colorExt = getDynamicColor('thermalZone', data.thermalZoneName);
-      colorInt = colorExt;
-      break;
-    case 'spaceType':
-      colorExt = getDynamicColor('spaceType', data.spaceTypeName);
-      colorInt = colorExt;
-      break;
-    case 'buildingStory':
-      colorExt = getDynamicColor('buildingStory', data.buildingStoryName);
-      colorInt = colorExt;
-      break;
-    default:
-      colorExt = 0xcccccc;
-      colorInt = 0xeeeeee;
+
+      // Geometry diagnostic filters
+      if (visible && showOnlyNonConvexSurfaces && obj.userData.convex !== false) {
+        visible = false;
+      }
+      if (visible && showOnlyIncorrectlyOriented && obj.userData.correctlyOriented !== false) {
+        visible = false;
+      }
+      if (visible && showOnlyNonConvexSpaces && obj.userData.spaceConvex !== false) {
+        visible = false;
+      }
+      if (visible && showOnlyNonEnclosedSpaces && obj.userData.spaceEnclosed !== false) {
+        visible = false;
+      }
+
+      obj.visible = visible;
+
+      const edges = this.objectEdges.get(obj);
+      if (edges) {
+        edges.visible = visible && showEdges;
+      }
+
+      const backObj = this.backObjects.get(obj);
+      if (backObj) {
+        backObj.visible = visible;
+      }
+    });
+
+    this._requestRender();
   }
-  return { colorExt, colorInt };
-}
 
-function updateRenderMode() {
-  const renderMode = document.getElementById('renderBy').value;
-  sceneObjects.forEach(obj => {
-    const { colorExt, colorInt } = getColorsForObject(obj, renderMode);
-    obj.material.color.setHex(colorExt);
-    const backObj = backObjects.get(obj);
-    if (backObj) {
-      backObj.material.color.setHex(colorInt);
+  _updateRenderMode() {
+    const renderMode = this.container.querySelector('.renderBy').value;
+    this.sceneObjects.forEach(obj => {
+      const { colorExt, colorInt } = this._getColorsForObject(obj, renderMode);
+      obj.material.color.setHex(colorExt);
+      const backObj = this.backObjects.get(obj);
+      if (backObj) {
+        backObj.material.color.setHex(colorInt);
+      }
+    });
+    this._requestRender();
+  }
+
+  _getColorsForObject(obj, renderMode) {
+    const data = obj.userData;
+    let colorExt, colorInt;
+
+    switch (renderMode) {
+      case 'surfaceType':
+        colorExt = EffiBEMViewer.SURFACE_TYPE_COLORS[data.surfaceType] ?? 0xcccccc;
+        colorInt = EffiBEMViewer.SURFACE_TYPE_COLORS_INT[data.surfaceType] ?? 0xeeeeee;
+        break;
+      case 'boundary':
+        const bc = data.outsideBoundaryCondition || 'Outdoors';
+        let boundaryKey = bc;
+        if (bc === 'Outdoors') {
+          const sun = data.sunExposure === 'SunExposed';
+          const wind = data.windExposure === 'WindExposed';
+          if (sun && wind) boundaryKey = 'Outdoors_SunWind';
+          else if (sun) boundaryKey = 'Outdoors_Sun';
+          else if (wind) boundaryKey = 'Outdoors_Wind';
+        }
+        colorExt = EffiBEMViewer.BOUNDARY_COLORS[boundaryKey] ?? EffiBEMViewer.BOUNDARY_COLORS[bc] ?? 0xcccccc;
+        colorInt = colorExt;
+        break;
+      case 'construction':
+        colorExt = this._getDynamicColor('construction', data.constructionName);
+        colorInt = colorExt;
+        break;
+      case 'thermalZone':
+        colorExt = this._getDynamicColor('thermalZone', data.thermalZoneName);
+        colorInt = colorExt;
+        break;
+      case 'spaceType':
+        colorExt = this._getDynamicColor('spaceType', data.spaceTypeName);
+        colorInt = colorExt;
+        break;
+      case 'buildingStory':
+        colorExt = this._getDynamicColor('buildingStory', data.buildingStoryName);
+        colorInt = colorExt;
+        break;
+      default:
+        colorExt = 0xcccccc;
+        colorInt = 0xeeeeee;
     }
-  });
+    return { colorExt, colorInt };
+  }
 
-  requestRenderIfNotRequested();
-}
+  _getDynamicColor(category, name) {
+    if (!this._dynamicColors) this._dynamicColors = {};
+    const key = `${category}_${name}`;
+    if (!this._dynamicColors[key]) {
+      this._dynamicColors[key] = EffiBEMViewer._stringToColor(name);
+    }
+    return this._dynamicColors[key];
+  }
 
-document.getElementById('renderBy').addEventListener('change', updateRenderMode);
+  static _stringToColor(str) {
+    if (!str) return 0xcccccc;
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const h = Math.abs(hash) % 360;
+    return new THREE.Color(`hsl(${h}, 65%, 55%)`).getHex();
+  }
 
-const gltfData = {{ gltf_data | tojson(indent=indent) }};
+  _requestRender() {
+    if (!this.renderRequested) {
+      this.renderRequested = true;
+      requestAnimationFrame(() => this._render());
+    }
+  }
 
-const loader = new GLTFLoader();
-loader.parse(
-  JSON.stringify(gltfData),
-  "",
-  (gltf) => {
-    scene.add(gltf.scene);
+  _render() {
+    this.renderRequested = false;
+    this.orbitControls.update();
+    this.renderer.render(this.scene, this.camera);
+  }
 
-    // Collect all meshes with userData for filtering
-    const renderMode = document.getElementById('renderBy').value;
+  _loadGLTF(gltfData) {
+    const loader = new GLTFLoader();
+    loader.parse(
+      JSON.stringify(gltfData),
+      "",
+      (gltf) => {
+        this.scene.add(gltf.scene);
+        this._processLoadedScene(gltf, gltfData);
+        this._requestRender();
+      },
+      (e) => console.error('GLTF load error:', e)
+    );
+  }
+
+  _processLoadedScene(gltf, gltfData) {
+    const renderMode = this.container.querySelector('.renderBy').value;
     const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
 
     gltf.scene.traverse(obj => {
       if (obj.isMesh && obj.userData?.surfaceType) {
-        sceneObjects.push(obj);
+        this.sceneObjects.push(obj);
 
-        const { colorExt, colorInt } = getColorsForObject(obj, renderMode);
+        const { colorExt, colorInt } = this._getColorsForObject(obj, renderMode);
 
-        // Front face material
         obj.material = new THREE.MeshPhongMaterial({
           color: colorExt,
           specular: 0x222222,
@@ -533,7 +554,6 @@ loader.parse(
           side: THREE.FrontSide
         });
 
-        // Create back face object with interior color
         const backObj = obj.clone();
         backObj.material = new THREE.MeshPhongMaterial({
           color: colorInt,
@@ -542,23 +562,22 @@ loader.parse(
           side: THREE.BackSide
         });
         obj.parent.add(backObj);
-        backObjects.set(obj, backObj);
-        backToFront.set(backObj, obj);
+        this.backObjects.set(obj, backObj);
+        this.backToFront.set(backObj, obj);
 
-        // Create edge lines for this mesh
         const edgesGeometry = new THREE.EdgesGeometry(obj.geometry);
         const edges = new THREE.LineSegments(edgesGeometry, edgeMaterial);
         edges.position.copy(obj.position);
         edges.rotation.copy(obj.rotation);
         edges.scale.copy(obj.scale);
         obj.parent.add(edges);
-        objectEdges.set(obj, edges);
+        this.objectEdges.set(obj, edges);
       }
     });
 
-    // Populate story dropdown with unique values
-    const storySelect = document.getElementById('showStory');
-    const storyNames = [...new Set(sceneObjects.map(o => o.userData?.buildingStoryName).filter(Boolean))].sort();
+    // Populate story dropdown
+    const storySelect = this.container.querySelector('.showStory');
+    const storyNames = [...new Set(this.sceneObjects.map(o => o.userData?.buildingStoryName).filter(Boolean))].sort();
     storyNames.forEach(name => {
       const option = document.createElement('option');
       option.value = name;
@@ -566,30 +585,34 @@ loader.parse(
       storySelect.appendChild(option);
     });
 
-    // Position camera using bounding box from GLTF metadata
-    const bbox = gltfData.scenes?.[0]?.extras?.boundingbox;
+    // Add axes and position camera
+    this._addAxes(gltfData);
+    this._positionCamera(gltfData);
+  }
 
-    // Add axes (X=red, Y=green, Z=blue) - converted from OpenStudio Z-up to Three.js Y-up
+  _addAxes(gltfData) {
+    const bbox = gltfData.scenes?.[0]?.extras?.boundingbox;
     const axisSize = bbox ? bbox.lookAtR * 4 : 10;
 
+    // X axis (red)
     const xAxisGeometry = new THREE.BufferGeometry().setFromPoints([
       new THREE.Vector3(0, 0, 0), new THREE.Vector3(axisSize, 0, 0)
     ]);
-    scene.add(new THREE.Line(xAxisGeometry, new THREE.LineBasicMaterial({ color: 0xff0000 })));
+    this.scene.add(new THREE.Line(xAxisGeometry, new THREE.LineBasicMaterial({ color: 0xff0000 })));
 
-    // OpenStudio Y -> Three.js -Z
+    // Y axis (green) - OpenStudio Y -> Three.js -Z
     const yAxisGeometry = new THREE.BufferGeometry().setFromPoints([
       new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, -axisSize)
     ]);
-    scene.add(new THREE.Line(yAxisGeometry, new THREE.LineBasicMaterial({ color: 0x00ff00 })));
+    this.scene.add(new THREE.Line(yAxisGeometry, new THREE.LineBasicMaterial({ color: 0x00ff00 })));
 
-    // OpenStudio Z -> Three.js Y
+    // Z axis (blue) - OpenStudio Z -> Three.js Y
     const zAxisGeometry = new THREE.BufferGeometry().setFromPoints([
       new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, axisSize, 0)
     ]);
-    scene.add(new THREE.Line(zAxisGeometry, new THREE.LineBasicMaterial({ color: 0x0000ff })));
+    this.scene.add(new THREE.Line(zAxisGeometry, new THREE.LineBasicMaterial({ color: 0x0000ff })));
 
-    // North axis (orange) if northAxis is set
+    // North axis (orange) if set
     const northAxis = gltfData.scenes?.[0]?.extras?.northAxis;
     if (northAxis && northAxis !== 0) {
       const northAxisRad = -northAxis * Math.PI / 180.0;
@@ -597,51 +620,126 @@ loader.parse(
         new THREE.Vector3(0, 0, 0),
         new THREE.Vector3(-Math.sin(northAxisRad) * axisSize, 0, -Math.cos(northAxisRad) * axisSize)
       ]);
-      scene.add(new THREE.Line(northAxisGeometry, new THREE.LineBasicMaterial({ color: 0xff9933 })));
+      this.scene.add(new THREE.Line(northAxisGeometry, new THREE.LineBasicMaterial({ color: 0xff9933 })));
     }
+  }
 
+  _positionCamera(gltfData) {
+    const bbox = gltfData.scenes?.[0]?.extras?.boundingbox;
     if (bbox) {
-      // Convert from OpenStudio coords (Z-up) to Three.js coords (Y-up)
       const lookAt = new THREE.Vector3(bbox.lookAtX, bbox.lookAtZ, -bbox.lookAtY);
       const radius = 2.5 * bbox.lookAtR;
 
-      // Position camera at an angle (similar to -30, 30 degrees)
       const theta = -30 * Math.PI / 180;
       const phi = 30 * Math.PI / 180;
-      camera.position.set(
+      this.camera.position.set(
         radius * Math.cos(theta) * Math.cos(phi) + lookAt.x,
         radius * Math.sin(phi) + lookAt.y,
         -radius * Math.sin(theta) * Math.cos(phi) + lookAt.z
       );
 
-      controls.target.copy(lookAt);
-      controls.update();
+      this.orbitControls.target.copy(lookAt);
+      this.orbitControls.update();
     }
+  }
 
-    requestRenderIfNotRequested();
-  },
-  (e) => console.error(e)
-);
+  /**
+   * Load and render a GLTF model from a JSON object
+   * @param {Object} gltfData - The GLTF JSON data
+   */
+  loadFromJSON(gltfData) {
+    this._loadGLTF(gltfData);
+  }
 
-// Render on demand (not every frame) to save CPU
-let renderRequested = false;
+  /**
+   * Load and render a GLTF model from a URL
+   * @param {string} url - URL to the GLTF JSON file
+   * @returns {Promise} Resolves when loading starts
+   */
+  loadFromFile(url) {
+    return fetch(url)
+      .then(response => {
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        return response.json();
+      })
+      .then(data => this.loadFromJSON(data));
+  }
 
-function render() {
-  renderRequested = false;
-  controls.update();
-  renderer.render(scene, camera);
-}
-
-function requestRenderIfNotRequested() {
-  if (!renderRequested) {
-    renderRequested = true;
-    requestAnimationFrame(render);
+  /**
+   * Load and render a GLTF model from a File object (e.g., from <input type="file">)
+   * @param {File} file - The File object to load
+   * @returns {Promise} Resolves when loading completes
+   */
+  loadFromFileObject(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target.result);
+          this.loadFromJSON(data);
+          resolve(data);
+        } catch (err) {
+          reject(new Error(`Failed to parse GLTF JSON: ${err.message}`));
+        }
+      };
+      reader.onerror = () => reject(new Error('Failed to read file'));
+      reader.readAsText(file);
+    });
   }
 }
 
-// Re-render when controls change (orbit, zoom, pan)
-controls.addEventListener('change', requestRenderIfNotRequested);
+// Static color definitions
+EffiBEMViewer.SURFACE_TYPE_COLORS = {
+  'Floor': 0x808080, 'Wall': 0xccb266, 'RoofCeiling': 0x994c4c,
+  'Window': 0x66b2cc, 'GlassDoor': 0x66b2cc, 'Skylight': 0x66b2cc,
+  'TubularDaylightDome': 0x66b2cc, 'TubularDaylightDiffuser': 0x66b2cc,
+  'Door': 0x99854c, 'OverheadDoor': 0x99854c,
+  'SiteShading': 0x4b7c95, 'BuildingShading': 0x714c99, 'SpaceShading': 0x4c6eb2,
+  'InteriorPartitionSurface': 0x9ebc8f, 'AirWall': 0x66b2cc,
+};
 
-// Re-render on window resize
-window.addEventListener('resize', requestRenderIfNotRequested);
+EffiBEMViewer.SURFACE_TYPE_COLORS_INT = {
+  'Floor': 0xbfbfbf, 'Wall': 0xebe2c5, 'RoofCeiling': 0xca9595,
+  'Window': 0xc0e2eb, 'GlassDoor': 0xc0e2eb, 'Skylight': 0xc0e2eb,
+  'TubularDaylightDome': 0xc0e2eb, 'TubularDaylightDiffuser': 0xc0e2eb,
+  'Door': 0xcabc95, 'OverheadDoor': 0xcabc95,
+  'SiteShading': 0xbbd1dc, 'BuildingShading': 0xd8cbe5, 'SpaceShading': 0xb7c5e0,
+  'InteriorPartitionSurface': 0xd5e2cf, 'AirWall': 0xc0e2eb,
+};
+
+EffiBEMViewer.BOUNDARY_COLORS = {
+  'Surface': 0x009900, 'Adiabatic': 0xff0000, 'Space': 0xff0000,
+  'Outdoors': 0xa3cccc, 'Outdoors_Sun': 0x28cccc, 'Outdoors_Wind': 0x099fa2, 'Outdoors_SunWind': 0x4477a1,
+  'Ground': 0xccb77a, 'Foundation': 0x751e7a,
+  'OtherSideCoefficients': 0x3f3f3f, 'OtherSideConditionsModel': 0x99004c,
+};
+
+// Expose to global scope for non-module usage
+window.EffiBEMViewer = EffiBEMViewer;
+
+// Convenience functions that match geometry_preview.html API
+window.runFromJSON = function(gltfData, options = {}) {
+  const containerId = options.containerId || 'viewer';
+  const viewer = new EffiBEMViewer(containerId, options);
+  viewer.loadFromJSON(gltfData);
+  return viewer;
+};
+
+window.runFromFile = function(url, options = {}) {
+  const containerId = options.containerId || 'viewer';
+  const viewer = new EffiBEMViewer(containerId, options);
+  viewer.loadFromFile(url);
+  return viewer;
+};
+
+window.runFromFileObject = function(file, options = {}) {
+  const containerId = options.containerId || 'viewer';
+  const viewer = new EffiBEMViewer(containerId, options);
+  viewer.loadFromFileObject(file);
+  return viewer;
+};
+
+// Auto-run with embedded data from Jinja template
+const gltfData = {{ gltf_data | tojson(indent=indent) }};
+runFromJSON(gltfData, { includeGeometryDiagnostics: {{ include_geometry_diagnostics | tojson }} });
 </script>

@@ -1,5 +1,12 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import openstudio
 from jinja2 import Environment, PackageLoader
+
+if TYPE_CHECKING:
+    from IPython.display import HTML, IFrame
 
 env = Environment(loader=PackageLoader("effibemviewer", "templates"))
 
@@ -71,7 +78,7 @@ def display_model(
     height: str = "500px",
     use_iframe: bool = False,
     include_geometry_diagnostics: bool = False,
-):
+) -> HTML | IFrame:
     """Display an OpenStudio model in a Jupyter notebook.
 
     Args:

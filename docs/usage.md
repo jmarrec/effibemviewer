@@ -48,3 +48,100 @@ With geometry diagnostics enabled, and when `--model` is omitted it uses the `cr
 ```console
 $ python -m effibemviewer --geometry-diagnostics --output output.html
 ```
+
+## JavaScript API
+
+The generated HTML exposes a JavaScript API that allows you to load and display GLTF models programmatically. This is useful if you want to integrate the viewer into your own web application or load models dynamically.
+
+### Global Functions
+
+Two convenience functions are exposed globally, matching the API of OpenStudio's `geometry_preview.html`:
+
+```javascript
+// Load from a JSON object (GLTF data)
+runFromJSON(gltfData, options);
+
+// Load from a URL (requires HTTP server, won't work with file://)
+runFromFile(url, options);
+
+// Load from a File object (works with local files via <input type="file">)
+runFromFileObject(file, options);
+```
+
+**Options:**
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `containerId` | string | `'viewer'` | ID of the container element |
+| `includeGeometryDiagnostics` | boolean | `false` | Show geometry diagnostic controls |
+
+**Example:**
+
+```html
+<div id="viewer" class="effibem-viewer">
+  <!-- Controls and info panel structure here -->
+</div>
+
+<script type="module">
+  // Assuming the viewer script is loaded...
+
+  // Load from a URL
+  runFromFile('./model.gltf', { includeGeometryDiagnostics: true });
+
+  // Or load from a JSON object
+  fetch('./model.gltf')
+    .then(r => r.json())
+    .then(data => runFromJSON(data));
+</script>
+```
+
+### EffiBEMViewer Class
+
+For more control, you can use the `EffiBEMViewer` class directly:
+
+```javascript
+// Create a viewer instance
+const viewer = new EffiBEMViewer('my-container', {
+  includeGeometryDiagnostics: true
+});
+
+// Load a model from JSON
+viewer.loadFromJSON(gltfData);
+
+// Or load from a URL (returns a Promise)
+viewer.loadFromFile('./model.gltf')
+  .then(() => console.log('Model loaded'));
+
+// Or load from a File object (e.g., from file input)
+const fileInput = document.querySelector('input[type="file"]');
+fileInput.addEventListener('change', (e) => {
+  viewer.loadFromFileObject(e.target.files[0])
+    .then(() => console.log('Model loaded from file'));
+});
+```
+
+The class provides access to the Three.js scene, camera, and renderer for advanced customization:
+
+```javascript
+const viewer = new EffiBEMViewer('viewer');
+viewer.loadFromJSON(gltfData);
+
+// Access Three.js objects
+console.log(viewer.scene);       // THREE.Scene
+console.log(viewer.camera);      // THREE.PerspectiveCamera
+console.log(viewer.renderer);    // THREE.WebGLRenderer
+console.log(viewer.orbitControls); // OrbitControls
+```
+
+### Required HTML Structure
+
+The viewer expects a container with the `effibem-viewer` class and specific child elements for controls and info panel. The easiest way to get the correct structure is to use the Python API to generate the HTML, then customize as needed:
+
+```python
+from effibemviewer import model_to_gltf_html
+
+# Generate HTML with empty/minimal model, then replace the data
+html = model_to_gltf_html(model)
+```
+
+Alternatively, you can create your own container and only include the controls you need. The viewer uses class-based selectors (e.g., `.showFloors`, `.renderBy`) rather than IDs, allowing multiple viewers on the same page.
