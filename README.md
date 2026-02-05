@@ -9,8 +9,9 @@
 
 A 3D viewer for OpenStudio building energy models using GLTF and Three.js, that can create a standalone HTML page or be embedded into a Jupyter Notebook.
 
-A Jupyter Notebook [Gltf_notebook.ipynb](Gltf_notebook.ipynb) can serve as a small demonstration of the features.
+A Jupyter Notebook [Gltf_notebook.ipynb](https://github.com/jmarrec/effibemviewer/blob/main/Gltf_notebook.ipynb) can serve as a small demonstration of the features.
 
+![Demo in a Jupyter Notebook](https://raw.githubusercontent.com/jmarrec/effibemviewer/refs/heads/main/docs/assets/demo.png)
 
 * Documentation: <https://jmarrec.github.io/effibemviewer>
 * GitHub: <https://github.com/jmarrec/effibemviewer>
