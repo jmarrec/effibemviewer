@@ -18,10 +18,12 @@ JS_LIB_NAME = f"{BASE_NAME}.js"
 CSS_LIB_NAME = f"{BASE_NAME}.css"
 
 
-def main():
-    """Command-line interface for generating GLTF viewer HTML from an OpenStudio model."""
-    parser = argparse.ArgumentParser(description="Generate GLTF viewer HTML from OpenStudio model")
-    # -m, --model: Path to the OpenStudio model file (optional, defaults to an example model)
+def get_parser() -> argparse.ArgumentParser:
+    """Create and return the argument parser for the CLI."""
+    parser = argparse.ArgumentParser(
+        prog="python -m effibemviewer",
+        description="Generate GLTF viewer HTML from OpenStudio model",
+    )
     parser.add_argument(
         "-m",
         "--model",
@@ -49,7 +51,6 @@ def main():
         action="store_true",
         help="Reference JS library from CDN instead of embedding or generating local file",
     )
-
     parser.add_argument(
         "--pretty",
         action="store_true",
@@ -60,6 +61,12 @@ def main():
         action="store_true",
         help="Generate a loader HTML with file input instead of embedding model data",
     )
+    return parser
+
+
+def main():
+    """Command-line interface for generating GLTF viewer HTML from an OpenStudio model."""
+    parser = get_parser()
     args = parser.parse_args()
 
     # Determine paths (relative to output HTML)

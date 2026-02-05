@@ -1000,6 +1000,24 @@ docs = ["mdx_gh_links (>=0.2)", "mkdocs (>=1.6)", "mkdocs-gen-files", "mkdocs-li
 testing = ["coverage", "pyyaml"]
 
 [[package]]
+name = "markdown-exec"
+version = "1.12.1"
+description = "Utilities to execute code blocks in Markdown files."
+optional = false
+python-versions = ">=3.10"
+groups = ["doc"]
+files = [
+    {file = "markdown_exec-1.12.1-py3-none-any.whl", hash = "sha256:a645dce411fee297f5b4a4169c245ec51e20061d5b71e225bef006e87f3e465f"},
+    {file = "markdown_exec-1.12.1.tar.gz", hash = "sha256:eee8ba0df99a5400092eeda80212ba3968f3cbbf3a33f86f1cd25161538e6534"},
+]
+
+[package.dependencies]
+pymdown-extensions = ">=9"
+
+[package.extras]
+ansi = ["pygments-ansi-color (>=0.3)"]
+
+[[package]]
 name = "markdown-it-py"
 version = "4.0.0"
 description = "Python port of markdown-it. Markdown parsing, done right!"
@@ -2163,4 +2181,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4.0"
-content-hash = "cdfd45d2c05be3ac11dda6703b214a66ee995e5489ed768ed823cfd8a650527a"
+content-hash = "f7e699783b43ff2d98157350d2915bdd5a123ace85cf45f098ac0f472f2b3b1c"

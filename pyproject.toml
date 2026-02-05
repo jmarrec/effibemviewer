@@ -53,6 +53,7 @@ mkdocs-material = "^9.7.1"
 mkdocstrings = "^1.0.2"
 mkdocstrings-python = "^2.0.1"
 mkdocs-autorefs = "^1.4.3"
+markdown-exec = "^1.12.1"
 
 [tool.black]
 line-length = 120

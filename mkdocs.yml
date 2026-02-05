@@ -54,6 +54,7 @@ markdown_extensions:
   - meta
 plugins:
   - include-markdown
+  - markdown-exec
   - search:
       lang: en
   - mkdocstrings:

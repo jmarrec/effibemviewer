@@ -63,12 +63,11 @@ Path("viewer.html").write_text(html)
 
 Generate an HTML viewer from the command line:
 
-```console
-$ python -m effibemviewer --help
-usage: __main__.py [-h] [-m MODEL] [-g] [-o OUTPUT] [--embedded | --cdn]
-                   [--pretty] [--loader]
+```python exec="true"
+from effibemviewer.__main__ import get_parser
 
-Generate GLTF viewer HTML from OpenStudio model
+parser = get_parser()
+print(f"```\n{parser.format_help()}```")
 ```
 
 ### Basic Usage
