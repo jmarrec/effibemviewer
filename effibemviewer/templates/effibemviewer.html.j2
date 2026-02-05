@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="EffiBEM Viewer - OpenStudio Model to GLTF with ThreeJS">
+    <meta name="description" content="EffiBEM Viewer - A Three.js-based viewer for OpenStudio GLTF modelsS">
     <meta name="author" content="EffiBEM EURL">
     <meta name="keywords" content="EnergyPlus, OpenStudio, Python, GLTF, Jupyter">
     <title>EffiBEM Viewer</title>
@@ -47,7 +47,7 @@
   {% endif %}
 {% endif %}
 
-  <div id="viewer" class="effibem-viewer">
+  <div id="viewer" class="effibem-viewer" style="height: {{ height }};">
 
     <div class="controls">
       <div style="margin-bottom: 8px;">
@@ -111,7 +111,7 @@
 
   {% if not script_only %}
   <footer>
-    <p>Copyright &copy; 2026 - {{ current_year }} <a href="https://effibem.com" target="_blank">EffiBEM EURL</a>. All rights reserved.</p>
+    <p>Copyright &copy; 2026 - {{ current_year }} <a href="https://effibem.com" target="_blank">EffiBEM EURL</a></p>
   </footer>
   {% endif %}
 

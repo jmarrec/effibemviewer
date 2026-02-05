@@ -102,6 +102,7 @@ def display_model(
     height: str = "500px",
     use_iframe: bool = False,
     include_geometry_diagnostics: bool = False,
+    cdn: bool = False,
 ) -> HTML | IFrame:
     """Display an OpenStudio model in a Jupyter notebook.
 
@@ -110,6 +111,7 @@ def display_model(
         height: CSS height value (default "500px")
         use_iframe: If True, use IFrame for nbclassic compatibility
         include_geometry_diagnostics: If True, include geometry diagnostic info
+        cdn: If True, load JS/CSS from CDN (better caching on re-runs)
 
     Returns:
         IPython display object (HTML or IFrame)
@@ -122,6 +124,7 @@ def display_model(
         embedded=True,
         loader_mode=False,
         script_only=True,
+        cdn=cdn,
     )
     if not use_iframe:
         from IPython.display import HTML
@@ -129,15 +132,24 @@ def display_model(
         return HTML(fragment)
 
     import base64
+    import datetime
 
     from IPython.display import IFrame
 
+    current_year = datetime.datetime.now().year
+    footer = f"""<p>
+      Copyright &copy; 2026 - {current_year} <a href="https://effibem.com" target="_blank">EffiBEM EURL</a>
+    </p>"""
     full_html = f"""<!DOCTYPE html>
 <html>
   <head>
   </head>
   <body style='margin:0'>
 {fragment}
+
+  <footer>
+    {footer}
+  </footer>
   </body>
 </html>"""
     data_url = f"data:text/html;base64,{base64.b64encode(full_html.encode()).decode()}"

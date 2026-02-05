@@ -1,6 +1,7 @@
 /**
  * EffiBEM Viewer - A Three.js-based viewer for OpenStudio GLTF models
  * https://github.com/jmarrec/effibemviewer
+ * https://effibem.com
  */
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
