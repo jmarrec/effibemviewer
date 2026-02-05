@@ -5,7 +5,7 @@ import openstudio
 import pytest
 
 from effibemviewer import create_example_model
-from effibemviewer.gltf import generate_loader_html, get_js_library, model_to_gltf_html, model_to_gltf_script
+from effibemviewer.gltf import generate_loader_html, get_js_library, model_to_gltf_html
 
 
 @pytest.fixture
@@ -61,8 +61,8 @@ class TestJSAPI:
             assert "includeGeometryDiagnostics: true" in html_with_diag
 
     def test_script_fragment_also_has_api(self, model):
-        """Test that the script fragment (not full HTML) also exposes the API."""
-        script = model_to_gltf_script(model)
+        """Test that the script fragment (script_only mode) also exposes the API."""
+        script = model_to_gltf_html(model, script_only=True)
         assert "window.EffiBEMViewer" in script
         assert "window.runFromJSON" in script
         assert "window.runFromFile" in script
@@ -87,14 +87,9 @@ class TestEmbeddedVsExternal:
 
     def test_external_mode_references_js_file(self, model):
         """Test that external mode references the external JS file."""
-        html = model_to_gltf_html(model, embedded=False, js_lib_path="./effibemviewer.js")
+        html = model_to_gltf_html(model, embedded=False)
         assert '<script type="module" src="./effibemviewer.js">' in html
         assert "class EffiBEMViewer" not in html  # Class should not be inline
-
-    def test_external_mode_custom_js_path(self, model):
-        """Test that external mode uses custom JS library path."""
-        html = model_to_gltf_html(model, embedded=False, js_lib_path="./js/viewer.js")
-        assert '<script type="module" src="./js/viewer.js">' in html
 
     def test_importmap_always_present(self, model):
         """Test that importmap is present in both embedded and external modes."""
@@ -102,7 +97,7 @@ class TestEmbeddedVsExternal:
         html_external = model_to_gltf_html(model, embedded=False)
         for html in [html_embedded, html_external]:
             assert '<script type="importmap">' in html
-            assert '"three": "https://unpkg.com/three@' in html
+            assert '"three": "https://cdn.jsdelivr.net/npm/three@' in html
 
     def test_get_js_library(self):
         """Test that get_js_library produces JS with bare specifiers (requires importmap)."""

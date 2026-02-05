@@ -40,46 +40,18 @@ def get_js_library() -> str:
     Returns:
         str: The JavaScript library content (uses bare specifiers, requires importmap)
     """
-    template = env.get_template("effibemviewer_lib.js.j2")
+    template = env.get_template("effibemviewer.js.j2")
     return template.render()
 
 
-def model_to_gltf_script(
-    model: openstudio.model.Model,
-    height: str = "500px",
-    pretty_json: bool = False,
-    include_geometry_diagnostics: bool = False,
-    embedded: bool = True,
-    js_lib_path: str = "./effibemviewer.js",
-) -> str:
-    """Generate HTML/JS fragment to render an OpenStudio model as GLTF.
+def get_css_library(height: str = "100vh") -> str:
+    """Get the EffiBEMViewer CSS library content.
 
-    Args:
-        model: OpenStudio model to render
-        height: CSS height value (default "500px", use "100vh" for full viewport)
-        pretty_json: If True, format JSON with indentation
-        include_geometry_diagnostics: If True, include geometry diagnostic info
-        embedded: If True, inline the JS library. If False, reference external JS file.
-        js_lib_path: Path to external JS library (only used if embedded=False)
+    Returns:
+        str: The CSS library content
     """
-    data = model_to_gltf_json(model=model, include_geometry_diagnostics=include_geometry_diagnostics)
-
-    template = env.get_template("gltf_viewer.html.j2")
-    indent = 2 if pretty_json else None
-
-    # For embedded mode, include JS library content inline
-    js_lib_content = get_js_library() if embedded else None
-
-    return template.render(
-        height=height,
-        gltf_data=data,
-        indent=indent,
-        include_geometry_diagnostics=include_geometry_diagnostics,
-        embedded=embedded,
-        js_lib_content=js_lib_content,
-        js_lib_path=js_lib_path,
-        loader_mode=False,
-    )
+    template = env.get_template("effibemviewer.css.j2")
+    return template.render(height=height)
 
 
 def model_to_gltf_html(
@@ -88,7 +60,8 @@ def model_to_gltf_html(
     pretty_json: bool = False,
     include_geometry_diagnostics: bool = False,
     embedded: bool = True,
-    js_lib_path: str = "./effibemviewer.js",
+    loader_mode: bool = False,
+    script_only: bool = False,
 ) -> str:
     """Generate a full standalone HTML page for viewing an OpenStudio model.
 
@@ -98,17 +71,21 @@ def model_to_gltf_html(
         pretty_json: If True, format JSON with indentation
         include_geometry_diagnostics: If True, include geometry diagnostic info
         embedded: If True, inline the JS library. If False, reference external JS file.
-        js_lib_path: Path to external JS library (only used if embedded=False)
     """
-    fragment = model_to_gltf_script(
-        model=model,
+    data = model_to_gltf_json(model=model, include_geometry_diagnostics=include_geometry_diagnostics)
+
+    template = env.get_template("effibemviewer.html.j2")
+    indent = 2 if pretty_json else None
+
+    return template.render(
         height=height,
-        pretty_json=pretty_json,
+        gltf_data=data,
+        indent=indent,
         include_geometry_diagnostics=include_geometry_diagnostics,
         embedded=embedded,
-        js_lib_path=js_lib_path,
+        loader_mode=loader_mode,
+        script_only=script_only,
     )
-    return f"<!DOCTYPE html><html><head></head><body style='margin:0'>{fragment}</body></html>"
 
 
 def display_model(
@@ -128,30 +105,42 @@ def display_model(
     Returns:
         IPython display object (HTML or IFrame)
     """
+    fragment = model_to_gltf_html(
+        model=model,
+        height=height,
+        pretty_json=False,
+        include_geometry_diagnostics=include_geometry_diagnostics,
+        embedded=True,
+        loader_mode=False,
+        script_only=True,
+    )
+    if not use_iframe:
+        from IPython.display import HTML
+
+        return HTML(fragment)
+
     import base64
 
-    from IPython.display import HTML, IFrame
+    from IPython.display import IFrame
 
-    if use_iframe:
-        full_html = model_to_gltf_html(
-            model=model, height=height, include_geometry_diagnostics=include_geometry_diagnostics
-        )
-        data_url = f"data:text/html;base64,{base64.b64encode(full_html.encode()).decode()}"
-        # Parse height for IFrame (needs integer pixels)
-        h = int(height.replace("px", "")) if height.endswith("px") else 500
-        return IFrame(src=data_url, width="100%", height=h)
-
-    fragment = model_to_gltf_script(
-        model=model, height=height, include_geometry_diagnostics=include_geometry_diagnostics
-    )
-    return HTML(fragment)
+    full_html = f"""<!DOCTYPE html>
+<html>
+  <head>
+  </head>
+  <body style='margin:0'>
+{fragment}
+  </body>
+</html>"""
+    data_url = f"data:text/html;base64,{base64.b64encode(full_html.encode()).decode()}"
+    # Parse height for IFrame (needs integer pixels)
+    h = int(height.replace("px", "")) if height.endswith("px") else 500
+    return IFrame(src=data_url, width="100%", height=h)
 
 
 def generate_loader_html(
     height: str = "100vh",
     include_geometry_diagnostics: bool = False,
     embedded: bool = True,
-    js_lib_path: str = "./effibemviewer.js",
 ) -> str:
     """Generate a standalone HTML page with a file input for loading GLTF files.
 
@@ -159,25 +148,22 @@ def generate_loader_html(
         height: CSS height value (default "100vh" for full viewport)
         include_geometry_diagnostics: If True, enable geometry diagnostic display
         embedded: If True, inline the JS library. If False, reference external JS file.
-        js_lib_path: Path to external JS library (only used if embedded=False)
 
     Returns:
         str: Full HTML page with file input for loading GLTF files
     """
-    template = env.get_template("gltf_viewer.html.j2")
-    js_lib_content = get_js_library() if embedded else None
+    template = env.get_template("effibemviewer.html.j2")
 
-    fragment = template.render(
+    html = template.render(
         height=height,
         gltf_data=None,
         indent=None,
         include_geometry_diagnostics=include_geometry_diagnostics,
         embedded=embedded,
-        js_lib_content=js_lib_content,
-        js_lib_path=js_lib_path,
         loader_mode=True,
+        script_only=False,
     )
-    return f"<!DOCTYPE html><html><head></head><body style='margin:0'>{fragment}</body></html>"
+    return html
 
 
 def create_example_model(include_geometry_diagnostics: bool = False) -> openstudio.model.Model:

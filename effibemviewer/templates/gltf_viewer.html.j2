@@ -1,4 +1,22 @@
 <style>
+  #header {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    background: #fff;
+    border-bottom: 1px solid #e0e0e0;
+    font-family: sans-serif;
+  }
+  #header img {
+    height: 32px;
+    margin-right: 12px;
+  }
+  #header h1 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+  }
   .effibem-viewer { width: 100%; height: {{ height }}; position: relative; }
   .effibem-viewer .controls {
     position: absolute;
@@ -68,6 +86,11 @@
     font-size: 14px;
   }
 </style>
+
+<header id="header">
+  <img src="{{ logo_path }}" alt="EffiBEM Logo">
+  <h1>EffiBEM Viewer</h1>
+</header>
 
 <div id="viewer" class="effibem-viewer">
 {% if loader_mode %}
@@ -139,8 +162,8 @@
 <script type="importmap">
 {
   "imports": {
-    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    "three": "https://cdn.jsdelivr.net/npm/three@0.182.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.182.0/examples/jsm/"
   }
 }
 </script>

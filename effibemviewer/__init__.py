@@ -8,18 +8,18 @@ from effibemviewer.gltf import (
     create_example_model,
     display_model,
     generate_loader_html,
+    get_css_library,
     get_js_library,
     model_to_gltf_html,
     model_to_gltf_json,
-    model_to_gltf_script,
 )
 
 __all__ = [
     "create_example_model",
     "display_model",
     "generate_loader_html",
+    "get_css_library",
     "get_js_library",
     "model_to_gltf_html",
     "model_to_gltf_json",
-    "model_to_gltf_script",
 ]
