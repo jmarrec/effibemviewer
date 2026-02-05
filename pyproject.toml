@@ -163,4 +163,7 @@ commands = [
 ]
 
 [tool.tox.gh-actions]
-python = {3.10 = ["py310"], 3.12 = ["py312", "format", "lint", "build"]}
+python = """
+    3.10: py310
+    3.12: py312, format, lint, build
+"""
