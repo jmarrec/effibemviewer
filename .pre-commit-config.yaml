@@ -32,3 +32,11 @@ repos:
     hooks:
       - id: mypy
         exclude: tests/
+  - repo: local
+    hooks:
+      - id: build-dist
+        name: Build viewer dist
+        entry: bash -c 'make dist && git add public/'
+        language: system
+        pass_filenames: false
+        files: ^effibemviewer/templates/

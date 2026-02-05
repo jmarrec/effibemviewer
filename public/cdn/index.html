@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EffiBEM Viewer - OpenStudio Model to GLTF with ThreeJS">
+    <meta name="author" content="EffiBEM EURL">
+    <meta name="keywords" content="EnergyPlus, OpenStudio, Python, GLTF, Jupyter">
+    <title>EffiBEM Viewer</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" href="https://effibem.com/images/ico/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/svg+xml" href="https://effibem.com/images/ico/favicon.svg">
+    <link rel="shortcut icon" href="https://effibem.com/images/ico/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://effibem.com/images/ico/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-title" content="EffiBEM">
+    <link rel="manifest" href="https://effibem.com/images/ico/site.webmanifest">
+
+
+
+    <link rel="stylesheet" href="./effibemviewer.css">
+
+
+
+  </head>
+
+  <body>
+    <header id="header">
+      <img src="https://effibem.com/images/logo.png" alt="EffiBEM Logo">
+      <h1>EffiBEM Viewer</h1>
+    </header>
+
+
+    <div id="loaderPrompt" class="effibem-loader">
+      <h2>EffiBEM Viewer</h2>
+      <p>Select an OpenStudio GLTF file to visualize</p>
+      <input type="file" id="fileInput" accept=".gltf,.json">
+    </div>
+
+
+
+  <div id="viewer" class="effibem-viewer">
+
+    <div class="controls">
+      <div style="margin-bottom: 8px;">
+        <label style="display: inline;"><strong>Render By</strong></label>
+        <select class="renderBy" style="margin-left: 8px; font-size: 12px;">
+          <option value="surfaceType">Surface Type</option>
+          <option value="boundary">Boundary</option>
+          <option value="construction">Construction</option>
+          <option value="thermalZone">Thermal Zone</option>
+          <option value="spaceType">Space Type</option>
+          <option value="buildingStory">Building Story</option>
+        </select>
+      </div>
+      <div style="margin: 8px 0;">
+        <label style="display: inline;"><strong>Show Story</strong></label>
+        <select class="showStory" style="margin-left: 8px; font-size: 12px;">
+          <option value="">All Stories</option>
+        </select>
+      </div>
+      <hr style="margin: 8px 0; border: none; border-top: 1px solid #ccc;">
+      <strong>Surface Filters</strong>
+      <label><input type="checkbox" class="showFloors" checked> Floors</label>
+      <label><input type="checkbox" class="showWalls" checked> Walls</label>
+      <label><input type="checkbox" class="showRoofs" checked> Roofs/Ceilings</label>
+      <label><input type="checkbox" class="showWindows" checked> Windows</label>
+      <label><input type="checkbox" class="showDoors" checked> Doors</label>
+      <label><input type="checkbox" class="showShading" checked> Shading</label>
+      <label><input type="checkbox" class="showPartitions" checked> Partitions</label>
+      <hr style="margin: 8px 0; border: none; border-top: 1px solid #ccc;">
+      <label><input type="checkbox" class="showEdges" checked> Show Edges</label>
+      <div class="diagnostics-section">
+        <hr style="margin: 8px 0; border: none; border-top: 1px solid #ccc;">
+        <strong>Geometry Diagnostics</strong>
+        <label><input type="checkbox" class="showOnlyNonConvexSurfaces"> Non-Convex Surfaces Only</label>
+        <label><input type="checkbox" class="showOnlyIncorrectlyOriented"> Incorrectly Oriented Only</label>
+        <label><input type="checkbox" class="showOnlyNonConvexSpaces"> Non-Convex Spaces Only</label>
+        <label><input type="checkbox" class="showOnlyNonEnclosedSpaces"> Non-Enclosed Spaces Only</label>
+      </div>
+    </div>
+
+    <div class="info-panel">
+      <h4 class="info-name"></h4>
+      <div class="info-row info-type-row"><span class="info-label">Surface Type:</span> <span class="info-type"></span></div>
+      <div class="info-row info-space-row"><span class="info-label">Space:</span> <span class="info-space"></span></div>
+      <div class="info-row info-spaceType-row"><span class="info-label">Space Type:</span> <span class="info-spaceType"></span></div>
+      <div class="info-row info-thermalZone-row"><span class="info-label">Thermal Zone:</span> <span class="info-thermalZone"></span></div>
+      <div class="info-row info-buildingStory-row"><span class="info-label">Building Story:</span> <span class="info-buildingStory"></span></div>
+      <div class="info-row info-construction-row"><span class="info-label">Construction:</span> <span class="info-construction"></span></div>
+      <div class="info-row info-boundary-row"><span class="info-label">Boundary:</span> <span class="info-boundary"></span></div>
+      <div class="info-row info-boundaryObject-row"><span class="info-label">Adjacent To:</span> <span class="info-boundaryObject"></span></div>
+      <div class="info-row info-sunExposure-row"><span class="info-label">Sun Exposure:</span> <span class="info-sunExposure"></span></div>
+      <div class="info-row info-windExposure-row"><span class="info-label">Wind Exposure:</span> <span class="info-windExposure"></span></div>
+      <div class="diagnostics-section">
+        <div class="info-row info-convex-row"><span class="info-label">Convex:</span> <span class="info-convex"></span></div>
+        <div class="info-row info-correctlyOriented-row"><span class="info-label">Correctly Oriented:</span> <span class="info-correctlyOriented"></span></div>
+        <div class="info-row info-spaceConvex-row"><span class="info-label">Space Convex:</span> <span class="info-spaceConvex"></span></div>
+        <div class="info-row info-spaceEnclosed-row"><span class="info-label">Space Enclosed:</span> <span class="info-spaceEnclosed"></span></div>
+      </div>
+    </div>
+  </div>
+
+
+  <footer>
+    <p>Copyright &copy; 2026 -  <a href="https://effibem.com" target="_blank">EffiBEM EURL</a>. All rights reserved.</p>
+  </footer>
+
+
+  <script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.182.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.182.0/examples/jsm/"
+  }
+}
+  </script>
+
+
+  <script type="module" src="./effibemviewer.js"></script>
+
+
+  <script type="module">
+
+    const options = { includeGeometryDiagnostics: true };
+    const viewer = new EffiBEMViewer('viewer', options);
+
+    document.getElementById('fileInput').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        document.getElementById('loaderPrompt').classList.add('hidden');
+        viewer.loadFromFileObject(file);
+      }
+    });
+
+  </script>
+
+
+  </body>
+</html>

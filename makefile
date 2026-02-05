@@ -1,6 +1,6 @@
 sources = effibemviewer
 
-.PHONY: test format lint unittest coverage pre-commit clean
+.PHONY: test format lint unittest coverage pre-commit clean dist
 test: format lint unittest
 
 format:
@@ -25,3 +25,10 @@ clean:
 	rm -rf *.egg-info
 	rm -rf .tox dist site
 	rm -rf coverage.xml .coverage
+
+dist:
+	rm -rf public/
+	mkdir -p public/embedded/
+	python -m effibemviewer --geometry-diagnostics --embedded --loader --output public/embedded/index.html
+	mkdir -p public/cdn/
+	python -m effibemviewer --geometry-diagnostics --loader --output public/cdn/index.html
