@@ -1,16 +1,22 @@
-import sys
-
-sys.path.insert(0, "/Users/julien/Software/Others/OS-build-release/Products/python")
 import openstudio
-
-sys.path.pop(0)
-
 from jinja2 import Environment, PackageLoader
 
 env = Environment(loader=PackageLoader("effibemviewer", "templates"))
 
 
 def model_to_gltf_json(model: openstudio.model.Model, include_geometry_diagnostics: bool = False) -> dict:
+    """Convert an OpenStudio model to GLTF JSON format (dict).
+
+    Args:
+        model: OpenStudio model to convert
+        include_geometry_diagnostics: If True, include geometry diagnostic info in the output
+
+    Returns:
+        dict: GLTF JSON data representing the model
+
+    Raises:
+        ValueError: If geometry diagnostics are requested but not supported by the OpenStudio version
+    """
     ft = openstudio.gltf.GltfForwardTranslator()
     if include_geometry_diagnostics:
         if not callable(getattr(openstudio.gltf.GltfForwardTranslator, "setIncludeGeometryDiagnostics", None)):

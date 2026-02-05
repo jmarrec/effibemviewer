@@ -1,0 +1,76 @@
+site_name: EffiBEM Viewer
+site_url: https://jmarrec.github.io/effibemviewer
+repo_url: https://github.com/jmarrec/effibemviewer
+repo_name: jmarrec/effibemviewer
+#strict: true
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - Usage: usage.md
+  - Modules: api.md
+  - Contributing: contributing.md
+  - Changelog: changelog.md
+theme:
+  name: material
+  logo: assets/logo.png
+  favicon: assets/favicon-96x96.png
+  language: en
+  #logo: assets/logo.png
+  palette:
+    scheme: preference
+    primary: indigo
+    accent: indigo
+  font:
+    text: Roboto
+  features:
+    - navigation.indexes
+    - navigation.instant
+    - navigation.tabs.sticky
+  icon:
+    repo: fontawesome/brands/github
+markdown_extensions:
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.critic
+  - pymdownx.caret
+  - pymdownx.mark
+  - pymdownx.tilde
+  - pymdownx.tabbed
+  - attr_list
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.highlight:
+      linenums: false
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.details
+  - admonition
+  - toc:
+      baselevel: 2
+      permalink: true
+      slugify: !!python/name:pymdownx.slugs.uslugify
+  - meta
+plugins:
+  - include-markdown
+  - search:
+      lang: en
+  - mkdocstrings:
+      watch:
+        - effibemviewer
+
+copyright: Copyright &copy; 2026 <a href="https://effibem.com/">EffiBEM</a>
+extra:
+  generator: false
+  social:
+    - icon: fontawesome/solid/link
+      link: https://effibem.com
+      name: EffiBEM
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/MarrecJulien
+      name: Tweet
+    - icon: fontawesome/brands/github
+      link: https://github.com/jmarrec/effibemviewer
+      name: Github
+    - icon: material/email
+      link: "mailto:contact@effibem.com"

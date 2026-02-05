@@ -17,11 +17,14 @@ classifiers = [
 ]
 packages = [
     { include = "effibemviewer" },
+    { include = "tests", format = "sdist" },
 ]
 
 [tool.poetry.urls]
 Homepage = "https://effibem.com"
+Documentation = "https://jmarrec.github.io/effibemviewer"
 Repository = "https://github.com/jmarrec/effibemviewer"
+Changelog = "https://github.com/jmarrec/effibemviewer/blob/main/CHANGELOG.md"
 Issues = "https://github.com/jmarrec/effibemviewer/issues"
 
 [tool.poetry.scripts]
@@ -37,11 +40,20 @@ black = "^26.1"
 isort = "^7.0"
 pytest = "^9.0"
 mypy = "^1.19"
+bump2version = "^1.0.1"
+
+[tool.poetry.group.doc.dependencies]
+mkdocs = "^1.6.1"
+mkdocs-include-markdown-plugin = "^7.2.1"
+mkdocs-material = "^9.7.1"
+mkdocstrings = "^1.0.2"
+mkdocstrings-python = "^2.0.1"
+mkdocs-autorefs = "^1.4.3"
 
 [tool.black]
 line-length = 120
 skip-string-normalization = true
-target-version = ['py39', 'py310', 'py311', 'py312']
+target-version = ['py310', 'py311', 'py312']
 include = '\.pyi?$'
 exclude = '''
 /(
