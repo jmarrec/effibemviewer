@@ -2,7 +2,7 @@
 
 __author__ = """Julien Marrec"""
 __email__ = 'contact@effibem.com'
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 from effibemviewer.gltf import (
     create_example_model,
