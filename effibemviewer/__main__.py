@@ -1,7 +1,7 @@
 import argparse
 from pathlib import Path
 
-from effibemviewer.gltf import create_example_model, get_js_library, model_to_gltf_html
+from effibemviewer.gltf import create_example_model, generate_loader_html, get_js_library, model_to_gltf_html
 
 
 def main():
@@ -33,7 +33,31 @@ def main():
         action="store_true",
         help="Pretty-print the JSON output in the HTML (default: compact JSON)",
     )
+    parser.add_argument(
+        "--loader",
+        action="store_true",
+        help="Generate a loader HTML with file input instead of embedding model data",
+    )
     args = parser.parse_args()
+
+    # Determine JS library path (relative to output HTML)
+    js_lib_path = "./effibemviewer.js"
+
+    if args.loader:
+        # Loader mode: generate HTML with file input, no model data
+        html_content = generate_loader_html(
+            include_geometry_diagnostics=args.geometry_diagnostics,
+            embedded=args.embedded,
+            js_lib_path=js_lib_path,
+        )
+        args.output.write_text(html_content)
+        print(f"Generated: {args.output}")
+
+        if not args.embedded:
+            js_output = args.output.parent / js_lib_path
+            js_output.write_text(get_js_library())
+            print(f"Generated: {js_output}")
+        return
 
     if args.model:
         import openstudio
@@ -44,9 +68,6 @@ def main():
     else:
         print("No model file provided, using example model")
         model = create_example_model(include_geometry_diagnostics=args.geometry_diagnostics)
-
-    # Determine JS library path (relative to output HTML)
-    js_lib_path = "./effibemviewer.js"
 
     html_content = model_to_gltf_html(
         model=model,

@@ -43,9 +43,40 @@
   .effibem-viewer .badge-danger { background-color: #dc3545; color: white; }
   .effibem-viewer .diagnostics-section { display: none; }
   .effibem-viewer.include-diagnostics .diagnostics-section { display: block; }
+  .effibem-loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-family: sans-serif;
+    z-index: 50;
+  }
+  .effibem-loader.hidden { display: none; }
+  .effibem-loader h2 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+  }
+  .effibem-loader p {
+    margin: 0 0 16px 0;
+    font-size: 13px;
+    color: #666;
+  }
+  .effibem-loader input[type="file"] {
+    font-size: 14px;
+  }
 </style>
 
 <div id="viewer" class="effibem-viewer">
+{% if loader_mode %}
+  <div id="loaderPrompt" class="effibem-loader">
+    <h2>EffiBEM Viewer</h2>
+    <p>Select an OpenStudio GLTF file to visualize</p>
+    <input type="file" id="fileInput" accept=".gltf,.json">
+  </div>
+{% endif %}
   <div class="controls">
     <div style="margin-bottom: 8px;">
       <label style="display: inline;"><strong>Render By</strong></label>
@@ -122,6 +153,20 @@
 <script type="module" src="{{ js_lib_path }}"></script>
 {% endif %}
 
+{% if loader_mode %}
+<script type="module">
+const options = { includeGeometryDiagnostics: {{ include_geometry_diagnostics | tojson }} };
+const viewer = new EffiBEMViewer('viewer', options);
+
+document.getElementById('fileInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    document.getElementById('loaderPrompt').classList.add('hidden');
+    viewer.loadFromFileObject(file);
+  }
+});
+</script>
+{% else %}
 <script type="module">
 const gltfData = {{ gltf_data | tojson(indent=indent) }};
 
@@ -129,3 +174,4 @@ const options = { includeGeometryDiagnostics: {{ include_geometry_diagnostics | 
 const viewer = new EffiBEMViewer('viewer', options);
 viewer.loadFromJSON(gltfData);
 </script>
+{% endif %}

@@ -5,7 +5,7 @@ import openstudio
 import pytest
 
 from effibemviewer import create_example_model
-from effibemviewer.gltf import get_js_library, model_to_gltf_html, model_to_gltf_script
+from effibemviewer.gltf import generate_loader_html, get_js_library, model_to_gltf_html, model_to_gltf_script
 
 
 @pytest.fixture
@@ -111,3 +111,29 @@ class TestEmbeddedVsExternal:
         assert 'import { GLTFLoader } from "three/addons/' in js
         assert "class EffiBEMViewer" in js
         assert "export { EffiBEMViewer }" in js
+
+
+class TestLoaderMode:
+    """Tests for loader mode (file input instead of embedded data)."""
+
+    def test_loader_has_file_input(self):
+        """Test that loader mode includes file input element."""
+        html = generate_loader_html()
+        assert '<input type="file" id="fileInput"' in html
+        assert 'accept=".gltf,.json"' in html
+
+    def test_loader_has_file_listener(self):
+        """Test that loader mode includes file input event listener."""
+        html = generate_loader_html()
+        assert "document.getElementById('fileInput').addEventListener('change'" in html
+        assert "viewer.loadFromFileObject(file)" in html
+
+    def test_loader_no_gltf_data(self):
+        """Test that loader mode does not include gltfData."""
+        html = generate_loader_html()
+        assert "const gltfData" not in html
+
+    def test_loader_with_diagnostics(self):
+        """Test that loader mode respects geometry diagnostics option."""
+        html = generate_loader_html(include_geometry_diagnostics=True)
+        assert "includeGeometryDiagnostics: true" in html

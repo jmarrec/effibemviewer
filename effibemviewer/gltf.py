@@ -78,6 +78,7 @@ def model_to_gltf_script(
         embedded=embedded,
         js_lib_content=js_lib_content,
         js_lib_path=js_lib_path,
+        loader_mode=False,
     )
 
 
@@ -144,6 +145,39 @@ def display_model(
         model=model, height=height, include_geometry_diagnostics=include_geometry_diagnostics
     )
     return HTML(fragment)
+
+
+def generate_loader_html(
+    height: str = "100vh",
+    include_geometry_diagnostics: bool = False,
+    embedded: bool = True,
+    js_lib_path: str = "./effibemviewer.js",
+) -> str:
+    """Generate a standalone HTML page with a file input for loading GLTF files.
+
+    Args:
+        height: CSS height value (default "100vh" for full viewport)
+        include_geometry_diagnostics: If True, enable geometry diagnostic display
+        embedded: If True, inline the JS library. If False, reference external JS file.
+        js_lib_path: Path to external JS library (only used if embedded=False)
+
+    Returns:
+        str: Full HTML page with file input for loading GLTF files
+    """
+    template = env.get_template("gltf_viewer.html.j2")
+    js_lib_content = get_js_library() if embedded else None
+
+    fragment = template.render(
+        height=height,
+        gltf_data=None,
+        indent=None,
+        include_geometry_diagnostics=include_geometry_diagnostics,
+        embedded=embedded,
+        js_lib_content=js_lib_content,
+        js_lib_path=js_lib_path,
+        loader_mode=True,
+    )
+    return f"<!DOCTYPE html><html><head></head><body style='margin:0'>{fragment}</body></html>"
 
 
 def create_example_model(include_geometry_diagnostics: bool = False) -> openstudio.model.Model:
