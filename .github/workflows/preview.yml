@@ -10,6 +10,12 @@ jobs:
   publish_dev_build:
     runs-on: ubuntu-latest
 
+    environment:
+      name: testpypi
+      url:  https://test.pypi.org/p/effibemviewer
+    permissions:
+      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
+
     strategy:
       matrix:
         python-versions: [ '3.12' ]
@@ -40,5 +46,6 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.TESTPYPI_TOKEN}}
-          repository_url: https://test.pypi.org/legacy/
-          skip_existing: true
+          repository-url: https://test.pypi.org/legacy/
+          skip-existing: true
+          verbose: true
