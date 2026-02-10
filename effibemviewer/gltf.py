@@ -10,7 +10,12 @@ from effibemviewer import __version__
 if TYPE_CHECKING:
     from IPython.display import HTML, IFrame
 
-env = Environment(loader=PackageLoader("effibemviewer", "templates"))
+env = Environment(
+    loader=PackageLoader("effibemviewer", "templates"),
+    keep_trailing_newline=True,
+    trim_blocks=True,
+    lstrip_blocks=True,
+)
 
 CDN_BASE_URL = f"https://cdn.jsdelivr.net/gh/jmarrec/effibemviewer@v{__version__}/public/cdn"
 
