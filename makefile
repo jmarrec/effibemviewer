@@ -1,6 +1,6 @@
 sources = effibemviewer
 
-.PHONY: test format lint unittest coverage pre-commit clean dist
+.PHONY: test format lint unittest coverage pre-commit clean dist minify
 test: format lint unittest
 
 format:
@@ -26,9 +26,14 @@ clean:
 	rm -rf .tox dist site
 	rm -rf coverage.xml .coverage
 
+minify:
+	npx --yes terser public/cdn/effibemviewer.js -o public/cdn/effibemviewer.min.js --compress --mangle
+	npx --yes csso-cli public/cdn/effibemviewer.css -o public/cdn/effibemviewer.min.css
+
 dist:
 	rm -rf public/
 	mkdir -p public/embedded/
 	python -m effibemviewer --geometry-diagnostics --embedded --loader --output public/embedded/index.html
 	mkdir -p public/cdn/
 	python -m effibemviewer --geometry-diagnostics --loader --output public/cdn/index.html
+	$(MAKE) minify
