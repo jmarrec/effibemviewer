@@ -169,6 +169,7 @@ def generate_loader_html(
     include_geometry_diagnostics: bool = False,
     embedded: bool = True,
     cdn: bool = False,
+    script_only: bool = False,
 ) -> str:
     """Generate a standalone HTML page with a file input for loading GLTF files.
 
@@ -177,7 +178,7 @@ def generate_loader_html(
         include_geometry_diagnostics: If True, enable geometry diagnostic display
         embedded: If True, inline the JS library. If False, reference external JS file.
         cdn: If True, reference JS/CSS from jsDelivr CDN (overrides embedded)
-
+        script_only: If True, generate only the script fragment (used in gh-pages only)
     Returns:
         str: Full HTML page with file input for loading GLTF files
     """
@@ -190,7 +191,7 @@ def generate_loader_html(
         include_geometry_diagnostics=include_geometry_diagnostics,
         embedded=embedded,
         loader_mode=True,
-        script_only=False,
+        script_only=script_only,
         cdn_base_url=CDN_BASE_URL if cdn else None,
     )
     return html

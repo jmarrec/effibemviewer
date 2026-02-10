@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Minified JS/CSS distribution (`effibemviewer.min.js`, `effibemviewer.min.css`) via terser and csso-cli
+- Added an Online Loader page to the gh-pages website
 
 ### Changed
 - Jinja2 environment now uses `trim_blocks`, `lstrip_blocks`, and `keep_trailing_newline` for cleaner HTML output

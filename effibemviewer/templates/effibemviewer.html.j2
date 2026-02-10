@@ -90,14 +90,14 @@ footer p {
       <img src="https://effibem.com/images/logo.png" alt="EffiBEM Logo">
       <h1>EffiBEM Viewer</h1>
     </header>
+{% endif %}
 
-  {% if loader_mode %}
+{% if loader_mode %}
     <div id="loaderPrompt" class="effibem-loader">
       <h2>EffiBEM Viewer</h2>
       <p>Select an OpenStudio GLTF file to visualize</p>
       <input type="file" id="fileInput" accept=".gltf,.json">
     </div>
-  {% endif %}
 {% endif %}
 
     <div id="viewer" class="effibem-viewer" style="height: {{ height }};">
