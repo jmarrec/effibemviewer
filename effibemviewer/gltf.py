@@ -16,6 +16,7 @@ env = Environment(
     trim_blocks=True,
     lstrip_blocks=True,
 )
+env.globals["version"] = __version__
 
 CDN_BASE_URL = f"https://cdn.jsdelivr.net/gh/jmarrec/effibemviewer@v{__version__}/public/cdn"
 
