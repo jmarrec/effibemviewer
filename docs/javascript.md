@@ -35,7 +35,7 @@ The easiest way to use the viewer is via the jsDelivr CDN:
 ```
 
 !!! tip
-    Replace `v0.2.0` with the version you want to use. Check the [releases page](https://github.com/jmarrec/effibemviewer/releases) for available versions.
+    Replace `@v0.2.2` with the version you want to use. Check the [releases page](https://github.com/jmarrec/effibemviewer/releases) for available versions.
 
 ## Global Functions
 
