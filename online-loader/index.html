@@ -486,8 +486,15 @@
 
   <h1>Online Loader</h1>
 
-<p>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jmarrec/effibemviewer@v0.3.0/public/cdn/effibemviewer.css">
+<style>
+/* Hide the auto-generated page title (the loader prompt has its own) */
+.md-typeset > h1:first-child {
+  display: none;
+}
+</style>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jmarrec/effibemviewer@v0.3.1/public/cdn/effibemviewer.css">
 
 
 
@@ -497,7 +504,7 @@
       <input type="file" id="fileInput" accept=".gltf,.json">
     </div>
 
-    <div id="viewer" class="effibem-viewer" style="height: 100vh;">
+    <div id="viewer" class="effibem-viewer" style="height: 70vh;">
 
       <div class="controls">
         <div style="margin-bottom: 8px;">
@@ -569,7 +576,7 @@
 }
     </script>
 
-    <script type="module" src="https://cdn.jsdelivr.net/gh/jmarrec/effibemviewer@v0.3.0/public/cdn/effibemviewer.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/gh/jmarrec/effibemviewer@v0.3.1/public/cdn/effibemviewer.js"></script>
 
     <script type="module">
 const options = { includeGeometryDiagnostics: true };
@@ -583,9 +590,6 @@ document.getElementById('fileInput').addEventListener('change', (e) => {
   }
 });
     </script>
-
-
-</p>
 
 
 
