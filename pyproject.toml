@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "effibemviewer"
-version = "0.3.0"
+version = "0.3.1"
 description = "A 3D viewer for OpenStudio building energy models using GLTF and Three.js"
 authors = ["Julien Marrec <contact@effibem.com>"]
 readme = "README.md"

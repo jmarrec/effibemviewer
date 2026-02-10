@@ -8,6 +8,7 @@ hide:
 from effibemviewer import generate_loader_html
 
 html_content = generate_loader_html(
+    height="70vh",
     include_geometry_diagnostics=True,
     embedded=False,
     cdn=True,
