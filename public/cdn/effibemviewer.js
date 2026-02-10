@@ -1,5 +1,5 @@
 /**
- * EffiBEM Viewer v0.2.3 - A Three.js-based viewer for OpenStudio GLTF models
+ * EffiBEM Viewer v0.3.0 - A Three.js-based viewer for OpenStudio GLTF models
  * https://github.com/jmarrec/effibemviewer
  * https://effibem.com
  */
