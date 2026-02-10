@@ -17,7 +17,9 @@ repos:
     rev: v6.0.0
     hooks:
       - id: trailing-whitespace
+        exclude: \.min\.(js|css)$
       - id: end-of-file-fixer
+        exclude: \.min\.(js|css)$
       - id: check-merge-conflict
       - id: check-yaml
         args: [ --unsafe ]
